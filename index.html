@@ -1,548 +1,707 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<title>Dawiyat Interregional Network Topology</title>
+<title>Dawiyat Core & Interregional Network</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;background:#050d1a;}
+html,body{width:100%;height:100%;overflow:hidden;background:#06101e;}
 #wrap{width:100%;height:100%;}
 #mainsvg{width:100%;height:100%;display:block;}
-#tvbtn{position:fixed;bottom:18px;right:22px;z-index:999;
-  background:rgba(0,200,255,.12);border:1.5px solid rgba(0,200,255,.5);
-  color:#00c8ff;font-size:11px;letter-spacing:2px;padding:9px 20px;
-  cursor:pointer;border-radius:20px;font-family:'Segoe UI',sans-serif;font-weight:700;text-transform:uppercase;}
-#tvov{display:none;position:fixed;inset:0;background:#050d1a;z-index:9999;}
+#tvbtn{position:fixed;bottom:16px;right:20px;z-index:999;
+  background:rgba(0,180,255,.1);border:1.5px solid rgba(0,180,255,.45);
+  color:#40c0ff;font-size:10px;letter-spacing:2px;padding:8px 18px;
+  cursor:pointer;border-radius:18px;font-family:'Segoe UI',sans-serif;font-weight:700;text-transform:uppercase;}
+#tvov{display:none;position:fixed;inset:0;background:#06101e;z-index:9999;}
 #tvov.on{display:block;}
 #tvsvg{width:100%;height:100%;display:block;}
-#exitbtn{position:fixed;bottom:18px;right:22px;z-index:10000;
-  background:rgba(0,200,255,.12);border:1.5px solid rgba(0,200,255,.5);
-  color:#00c8ff;font-size:11px;letter-spacing:2px;padding:9px 20px;
-  cursor:pointer;border-radius:20px;font-family:'Segoe UI',sans-serif;font-weight:700;text-transform:uppercase;display:none;}
-@keyframes irflow{to{stroke-dashoffset:-36}}
+#exitbtn{position:fixed;bottom:16px;right:20px;z-index:10000;
+  background:rgba(0,180,255,.1);border:1.5px solid rgba(0,180,255,.45);
+  color:#40c0ff;font-size:10px;letter-spacing:2px;padding:8px 18px;
+  cursor:pointer;border-radius:18px;font-family:'Segoe UI',sans-serif;font-weight:700;text-transform:uppercase;display:none;}
+/* Only IR/inter links animate */
+@keyframes irflow{to{stroke-dashoffset:-40}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes spinr{to{transform:rotate(-360deg)}}
-@keyframes alarm{0%,100%{opacity:1}50%{opacity:.05}}
 </style>
 </head>
 <body>
 <div id="wrap">
 <svg id="mainsvg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
 <defs>
-  <radialGradient id="bg" cx="50%" cy="45%" r="70%">
-    <stop offset="0%" stop-color="#0a1628"/><stop offset="100%" stop-color="#020810"/>
+  <radialGradient id="bg" cx="50%" cy="44%" r="68%">
+    <stop offset="0%" stop-color="#0d1e38"/><stop offset="100%" stop-color="#030810"/>
   </radialGradient>
-  <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
-    <path d="M60 0L0 0 0 60" fill="none" stroke="rgba(0,150,255,.04)" stroke-width="1"/>
+  <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+    <path d="M64 0L0 0 0 64" fill="none" stroke="rgba(0,140,255,.035)" stroke-width="1"/>
   </pattern>
-  <filter id="glow4"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <filter id="glow8"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <filter id="glow12"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <filter id="titlefx"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <filter id="irglow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="g3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="g6"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="g10"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="tf"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="irf"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>
 
 <rect width="1920" height="1080" fill="url(#bg)"/>
 <rect width="1920" height="1080" fill="url(#grid)"/>
-<circle cx="50" cy="50" r="35" fill="none" stroke="rgba(0,180,255,.07)" stroke-width="1"/>
-<circle cx="1870" cy="50" r="35" fill="none" stroke="rgba(0,180,255,.07)" stroke-width="1"/>
-<circle cx="50" cy="1030" r="35" fill="none" stroke="rgba(0,180,255,.07)" stroke-width="1"/>
-<circle cx="1870" cy="1030" r="35" fill="none" stroke="rgba(0,180,255,.07)" stroke-width="1"/>
 
 <!-- ═══ TITLE ═══ -->
-<text x="960" y="52" text-anchor="middle" font-size="42" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" letter-spacing="3" filter="url(#titlefx)">
-  <tspan fill="#ffffff">DAWIYAT </tspan><tspan fill="#00d4ff">INTERREGIONAL</tspan><tspan fill="#ffffff"> NETWORK </tspan><tspan fill="#00d4ff">TOPOLOGY</tspan>
+<text x="960" y="48" text-anchor="middle" font-size="40" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" letter-spacing="2" filter="url(#tf)">
+  <tspan fill="#ffffff">Dawiyat Core &amp; </tspan><tspan fill="#00ccff">Interregional Network</tspan>
 </text>
-<text x="960" y="76" text-anchor="middle" font-size="15" font-weight="600"
-  font-family="'Segoe UI',Arial,sans-serif" fill="rgba(160,210,255,.55)" letter-spacing="2">
+<text x="960" y="72" text-anchor="middle" font-size="14" font-weight="600"
+  font-family="'Segoe UI',Arial,sans-serif" fill="rgba(150,200,255,.5)" letter-spacing="2">
   Cisco Managed Services  ·  ISIS Core Architecture  ·  Dawiyat Digital
 </text>
-<line x1="100" y1="88" x2="1820" y2="88" stroke="rgba(0,180,255,.18)" stroke-width="1"/>
+<line x1="80" y1="82" x2="1840" y2="82" stroke="rgba(0,160,255,.14)" stroke-width="1"/>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- REGION BOXES                                               -->
-<!-- Each: outer rect, filled header bar, bold label           -->
-<!-- Node clearance: header bar occupies top 34px of each box  -->
-<!-- Min node cy = box_y + 34 + node_radius + 20px padding     -->
-<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- REGION BOXES — header bar + bold label                    -->
+<!-- Exact ISIS domain IDs from PDF page 6                     -->
+<!-- ══════════════════════════════════════════════════════════ -->
 
-<!-- ── N. CENTRAL  y=96 h=228  nodes min_cy≈170 ── -->
-<!-- HFR7(148,190) HN01(322,183) TABK(72,285) 9300(262,285) -->
-<!-- box bottom = 96+228 = 324  max node cy+r ≤ 314 ✓ -->
-<rect x="16" y="96" width="374" height="228" rx="10" fill="rgba(0,200,180,.04)" stroke="#00c8b4" stroke-width="2"/>
-<rect x="16" y="96" width="374" height="34" rx="10" fill="rgba(0,180,160,.26)"/>
-<rect x="16" y="112" width="374" height="18" fill="rgba(0,180,160,.26)"/>
-<text x="203" y="118" text-anchor="middle" font-size="13" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" fill="#00ffe8" letter-spacing="3">N. CENTRAL ISIS CORE</text>
+<!-- N. CENTRAL ISIS 50  (top-left, light olive bg like PDF) -->
+<rect x="14" y="90" width="388" height="220" rx="10"
+  fill="rgba(140,180,100,.06)" stroke="#9dc060" stroke-width="2"/>
+<rect x="14" y="90" width="388" height="36" rx="10" fill="rgba(120,160,70,.28)"/>
+<rect x="14" y="108" width="388" height="18" fill="rgba(120,160,70,.28)"/>
+<text x="208" y="113" text-anchor="middle" font-size="15" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" fill="#e8ffcc" letter-spacing="2">Northern Central  ISIS 50</text>
 
-<!-- ── NORTHERN  y=336 h=204  nodes min_cy≈410 ── -->
-<!-- ASAM(72,450) DBHG(224,435) MLNE(212,520) -->
-<!-- box bottom = 336+204 = 540  max cy+r = 520+40=560 → extend h to 240 -->
-<rect x="16" y="336" width="374" height="244" rx="10" fill="rgba(160,80,255,.04)" stroke="#a050ff" stroke-width="2"/>
-<rect x="16" y="336" width="374" height="34" rx="10" fill="rgba(140,60,240,.26)"/>
-<rect x="16" y="352" width="374" height="18" fill="rgba(140,60,240,.26)"/>
-<text x="203" y="358" text-anchor="middle" font-size="13" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" fill="#cc88ff" letter-spacing="3">NORTHERN ISIS CORE</text>
+<!-- NORTHERN ISIS 48  (mid-left, rose/pink bg like PDF) -->
+<rect x="14" y="326" width="388" height="230" rx="10"
+  fill="rgba(200,120,120,.05)" stroke="#d08080" stroke-width="2"/>
+<rect x="14" y="326" width="388" height="36" rx="10" fill="rgba(180,90,90,.26)"/>
+<rect x="14" y="344" width="388" height="18" fill="rgba(180,90,90,.26)"/>
+<text x="208" y="349" text-anchor="middle" font-size="15" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" fill="#ffe8e8" letter-spacing="2">Northern  ISIS 48</text>
 
-<!-- ── WESTERN  y=596 h=308  nodes min_cy≈670 ── -->
-<!-- SNJD(72,676) WADL(244,660) JDCN(72,758) MAKW(72,840) TARP(234,768) -->
-<!-- box bottom = 596+308 = 904  max cy+r = 840+42=882 ✓ -->
-<rect x="16" y="596" width="374" height="308" rx="10" fill="rgba(0,100,255,.04)" stroke="#3080ff" stroke-width="2"/>
-<rect x="16" y="596" width="374" height="34" rx="10" fill="rgba(20,80,220,.26)"/>
-<rect x="16" y="612" width="374" height="18" fill="rgba(20,80,220,.26)"/>
-<text x="203" y="618" text-anchor="middle" font-size="13" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" fill="#70b0ff" letter-spacing="3">WESTERN ISIS CORE</text>
+<!-- WESTERN ISIS 16  (lower-left, grey bg like PDF) -->
+<rect x="14" y="572" width="388" height="316" rx="10"
+  fill="rgba(160,160,180,.05)" stroke="#9090b8" stroke-width="2"/>
+<rect x="14" y="572" width="388" height="36" rx="10" fill="rgba(110,110,160,.26)"/>
+<rect x="14" y="590" width="388" height="18" fill="rgba(110,110,160,.26)"/>
+<text x="208" y="595" text-anchor="middle" font-size="15" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" fill="#e8e8ff" letter-spacing="2">Western  ISIS 16</text>
 
-<!-- ── SOUTHERN  y=916 h=152  nodes min_cy≈980 ── -->
-<!-- NMNT(78,1000) ABES(236,1000) -->
-<!-- box bottom = 916+152 = 1068  max cy+r = 1000+46=1046 ✓ -->
-<rect x="16" y="916" width="374" height="152" rx="10" fill="rgba(255,160,0,.04)" stroke="#ffa020" stroke-width="2"/>
-<rect x="16" y="916" width="374" height="34" rx="10" fill="rgba(220,130,0,.26)"/>
-<rect x="16" y="932" width="374" height="18" fill="rgba(220,130,0,.26)"/>
-<text x="203" y="938" text-anchor="middle" font-size="13" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" fill="#ffcc44" letter-spacing="3">SOUTHERN ISIS CORE</text>
+<!-- SOUTHERN ISIS 64  (bottom-left, peach bg like PDF) -->
+<rect x="14" y="904" width="388" height="160" rx="10"
+  fill="rgba(220,160,120,.05)" stroke="#d09060" stroke-width="2"/>
+<rect x="14" y="904" width="388" height="36" rx="10" fill="rgba(190,120,70,.26)"/>
+<rect x="14" y="922" width="388" height="18" fill="rgba(190,120,70,.26)"/>
+<text x="208" y="927" text-anchor="middle" font-size="15" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" fill="#fff0e0" letter-spacing="2">Southern  ISIS 64</text>
 
-<!-- ── CENTRAL  y=96 h=972  nodes min_cy≈152 ── -->
-<!-- 9031(516,318) 9019(716,308) 9003(916,310) -->
-<!-- 9025(516,494) 9053(726,500) 9015(930,492) -->
-<!-- 9013(818,662) 9016(526,800) 9005SH(696,892) 9005DC(898,892) -->
-<!-- box bottom = 96+972 = 1068 ✓ -->
-<rect x="398" y="96" width="824" height="972" rx="12" fill="rgba(0,200,80,.025)" stroke="#00c850" stroke-width="2.5" stroke-dasharray="12 6"/>
-<rect x="398" y="96" width="824" height="36" rx="12" fill="rgba(0,160,60,.20)"/>
-<rect x="398" y="114" width="824" height="18" fill="rgba(0,160,60,.20)"/>
-<text x="810" y="120" text-anchor="middle" font-size="14" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" fill="rgba(0,255,120,.65)" letter-spacing="4">CENTRAL ISIS CORE</text>
+<!-- CENTRAL ISIS 01  (big center, light blue bg like PDF) -->
+<rect x="416" y="90" width="856" height="978" rx="12"
+  fill="rgba(100,180,220,.04)" stroke="#60b0d8" stroke-width="2.5" stroke-dasharray="12 6"/>
+<rect x="416" y="90" width="856" height="38" rx="12" fill="rgba(60,140,190,.22)"/>
+<rect x="416" y="110" width="856" height="18" fill="rgba(60,140,190,.22)"/>
+<text x="844" y="116" text-anchor="middle" font-size="16" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" fill="rgba(160,230,255,.65)" letter-spacing="4">Central  ISIS 01</text>
 
-<!-- ── EASTERN  y=96 h=390  nodes min_cy≈160 ── -->
-<!-- FRDO(1326,200) KBLP(1568,185) AFII(1326,318) DAEE(1568,315) -->
-<!-- box bottom = 96+390 = 486  max cy+r = 318+66=384 ✓ -->
-<rect x="1238" y="96" width="670" height="390" rx="10" fill="rgba(120,60,255,.04)" stroke="#7840ff" stroke-width="2"/>
-<rect x="1238" y="96" width="670" height="34" rx="10" fill="rgba(100,40,230,.26)"/>
-<rect x="1238" y="112" width="670" height="18" fill="rgba(100,40,230,.26)"/>
-<text x="1573" y="118" text-anchor="middle" font-size="13" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" fill="#b090ff" letter-spacing="3">EASTERN ISIS CORE</text>
+<!-- EASTERN ISIS 32  (top-right, lavender bg like PDF) -->
+<rect x="1290" y="90" width="618" height="380" rx="10"
+  fill="rgba(160,130,200,.05)" stroke="#a080cc" stroke-width="2"/>
+<rect x="1290" y="90" width="618" height="36" rx="10" fill="rgba(130,90,180,.26)"/>
+<rect x="1290" y="108" width="618" height="18" fill="rgba(130,90,180,.26)"/>
+<text x="1599" y="113" text-anchor="middle" font-size="15" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" fill="#ece0ff" letter-spacing="2">Eastern  ISIS 32</text>
 
-<!-- ── LEGEND  y=500 h=568 ── -->
-<rect x="1238" y="500" width="670" height="568" rx="10" fill="rgba(0,180,255,.03)" stroke="rgba(0,180,255,.18)" stroke-width="1.5"/>
-<rect x="1238" y="500" width="670" height="34" rx="10" fill="rgba(0,140,200,.18)"/>
-<rect x="1238" y="516" width="670" height="18" fill="rgba(0,140,200,.18)"/>
-<text x="1573" y="522" text-anchor="middle" font-size="13" font-weight="900"
-  font-family="'Segoe UI',Arial,sans-serif" fill="rgba(0,220,255,.55)" letter-spacing="4">LINK LEGEND</text>
+<!-- LEGEND box  bottom-right -->
+<rect x="1290" y="484" width="618" height="584" rx="10"
+  fill="rgba(0,160,220,.025)" stroke="rgba(0,160,220,.18)" stroke-width="1.5"/>
+<rect x="1290" y="484" width="618" height="36" rx="10" fill="rgba(0,120,180,.20)"/>
+<rect x="1290" y="502" width="618" height="18" fill="rgba(0,120,180,.20)"/>
+<text x="1599" y="507" text-anchor="middle" font-size="14" font-weight="900"
+  font-family="'Segoe UI',Arial,sans-serif" fill="rgba(0,210,255,.55)" letter-spacing="4">LEGENDS</text>
 
-<!-- ══════════════════════════════════ -->
-<!-- LOCAL LINKS — STATIC              -->
-<!-- ══════════════════════════════════ -->
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- INTRA-REGION LOCAL LINKS — STATIC, colour per PDF     -->
+<!-- GREEN = 100G Intra-Region                             -->
+<!-- CYAN  = 200G Intra/Inter                              -->
+<!-- PURPLE= 400G Cisco DWDM                               -->
+<!-- ══════════════════════════════════════════════════════ -->
 
-<!-- N.CENTRAL static  HFR7(148,190) HN01(322,183) TABK(72,285) 9300(262,285) -->
-<line x1="194" y1="190" x2="284" y2="185" stroke="#00c8b4" stroke-width="2.5" opacity=".55"/>
-<line x1="155" y1="214" x2="88" y2="272" stroke="#00c8b4" stroke-width="2.5" opacity=".50"/>
-<line x1="174" y1="212" x2="248" y2="272" stroke="#00c8b4" stroke-width="2.5" opacity=".50"/>
-<line x1="108" y1="285" x2="220" y2="285" stroke="#00c8b4" stroke-width="2.5" opacity=".48"/>
-<line x1="310" y1="205" x2="256" y2="272" stroke="#00c8b4" stroke-width="2.5" opacity=".50"/>
-<text x="246" y="180" font-size="10" fill="rgba(0,220,200,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="94" y="238" font-size="10" fill="rgba(0,220,200,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="216" y="238" font-size="10" fill="rgba(0,220,200,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="152" y="278" font-size="10" fill="rgba(0,220,200,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
+<!-- N.CENTRAL intra (green 100G static)  HFR7(148,178) HN01(322,170) TABK(72,272) 9300(264,272) -->
+<line x1="194" y1="178" x2="286" y2="172" stroke="#22cc44" stroke-width="2.5" opacity=".65"/>
+<line x1="152" y1="202" x2="88" y2="258" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<line x1="172" y1="200" x2="248" y2="258" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<line x1="104" y1="272" x2="224" y2="272" stroke="#22cc44" stroke-width="2.5" opacity=".58"/>
+<line x1="308" y1="194" x2="258" y2="258" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<!-- 100G labels -->
+<text x="244" y="166" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="94" y="226" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="214" y="226" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="152" y="268" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="298" y="226" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- NORTHERN static  ASAM(72,450) DBHG(224,435) MLNE(212,520) -->
-<line x1="108" y1="448" x2="188" y2="438" stroke="#a050ff" stroke-width="2.5" opacity=".50"/>
-<line x1="98" y1="464" x2="188" y2="508" stroke="#a050ff" stroke-width="2.5" opacity=".45"/>
-<line x1="220" y1="453" x2="216" y2="504" stroke="#a050ff" stroke-width="2.5" opacity=".45"/>
-<line x1="104" y1="458" x2="184" y2="502" stroke="#a3e635" stroke-width="4" opacity=".55"/>
-<text x="140" y="434" font-size="10" fill="rgba(180,120,255,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="110" y="490" font-size="10" fill="rgba(180,230,80,.55)" font-family="Segoe UI,sans-serif" font-weight="600">200G</text>
-<text x="228" y="480" font-size="10" fill="rgba(180,120,255,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
+<!-- NORTHERN intra (green 100G static)  ASAM(72,438) DBHG(226,420) MDNE(210,516) -->
+<line x1="108" y1="435" x2="192" y2="424" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<line x1="96" y1="452" x2="190" y2="504" stroke="#22cc44" stroke-width="2.5" opacity=".55"/>
+<line x1="222" y1="438" x2="218" y2="500" stroke="#22cc44" stroke-width="2.5" opacity=".55"/>
+<text x="142" y="420" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="116" y="486" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="228" y="470" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- WESTERN static  SNJD(72,676) WADL(244,660) JDCN(72,758) MAKW(72,840) TARP(234,768) -->
-<line x1="110" y1="672" x2="204" y2="664" stroke="#3080ff" stroke-width="5" opacity=".55"/>
-<line x1="78" y1="694" x2="78" y2="736" stroke="#3080ff" stroke-width="5" opacity=".52"/>
-<line x1="78" y1="774" x2="78" y2="816" stroke="#3080ff" stroke-width="5" opacity=".52"/>
-<line x1="110" y1="842" x2="204" y2="782" stroke="#3080ff" stroke-width="2.5" opacity=".45"/>
-<line x1="248" y1="678" x2="242" y2="748" stroke="#3080ff" stroke-width="2.5" opacity=".45"/>
-<text x="150" y="660" font-size="10" fill="rgba(80,160,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
-<text x="46" y="718" font-size="10" fill="rgba(80,160,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
-<text x="46" y="798" font-size="10" fill="rgba(80,160,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
-<text x="154" y="806" font-size="10" fill="rgba(80,160,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="254" y="716" font-size="10" fill="rgba(80,160,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
+<!-- WESTERN intra (purple 400G DWDM static)  SNJD(72,660) JDCN(72,748) MAKW(72,836) WADL(248,648) TARP(238,756) -->
+<line x1="106" y1="656" x2="208" y2="648" stroke="#9040d0" stroke-width="7" opacity=".70"/>
+<line x1="78" y1="678" x2="78" y2="728" stroke="#9040d0" stroke-width="7" opacity=".68"/>
+<line x1="78" y1="766" x2="78" y2="814" stroke="#9040d0" stroke-width="7" opacity=".68"/>
+<line x1="106" y1="838" x2="208" y2="770" stroke="#22cc44" stroke-width="2.5" opacity=".55"/>
+<line x1="252" y1="666" x2="244" y2="738" stroke="#22cc44" stroke-width="2.5" opacity=".55"/>
+<text x="148" y="644" font-size="10" fill="rgba(180,100,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
+<text x="44" y="704" font-size="10" fill="rgba(180,100,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
+<text x="44" y="793" font-size="10" fill="rgba(180,100,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
+<text x="152" y="800" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="256" y="704" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- SOUTHERN static  NMNT(78,1000) ABES(236,1000) -->
-<line x1="116" y1="1000" x2="200" y2="1000" stroke="#ffa020" stroke-width="2.5" opacity=".48"/>
-<line x1="78" y1="978" x2="78" y2="858" stroke="#ffa020" stroke-width="2.5" opacity=".42"/>
-<line x1="240" y1="978" x2="238" y2="790" stroke="#ffa020" stroke-width="2.5" opacity=".42"/>
-<text x="148" y="992" font-size="10" fill="rgba(255,200,80,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="46" y="918" font-size="10" fill="rgba(255,200,80,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
+<!-- SOUTHERN intra (green 100G static)  NMNT(78,988) ABES(242,988) -->
+<line x1="116" y1="988" x2="208" y2="988" stroke="#22cc44" stroke-width="2.5" opacity=".58"/>
+<text x="156" y="980" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- EASTERN static  FRDO(1326,200) KBLP(1568,185) AFII(1326,318) DAEE(1568,315) -->
-<line x1="1368" y1="202" x2="1528" y2="192" stroke="#7840ff" stroke-width="6" opacity=".58"/>
-<line x1="1336" y1="228" x2="1336" y2="294" stroke="#7840ff" stroke-width="6" opacity=".55"/>
-<line x1="1574" y1="210" x2="1570" y2="288" stroke="#7840ff" stroke-width="2.5" opacity=".48"/>
-<line x1="1366" y1="326" x2="1524" y2="322" stroke="#7840ff" stroke-width="6" opacity=".58"/>
-<text x="1422" y="185" font-size="10" fill="rgba(170,120,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
-<text x="1304" y="264" font-size="10" fill="rgba(170,120,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
-<text x="1580" y="252" font-size="10" fill="rgba(170,120,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="1424" y="318" font-size="10" fill="rgba(170,120,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
+<!-- EASTERN intra (purple 400G DWDM static)  FRDO(1348,188) KBRP(1572,174) AFII(1348,306) DAEE(1572,306) -->
+<line x1="1390" y1="190" x2="1534" y2="180" stroke="#9040d0" stroke-width="7" opacity=".72"/>
+<line x1="1358" y1="216" x2="1358" y2="284" stroke="#9040d0" stroke-width="7" opacity=".70"/>
+<line x1="1584" y1="200" x2="1580" y2="280" stroke="#22cc44" stroke-width="2.5" opacity=".55"/>
+<line x1="1390" y1="314" x2="1534" y2="314" stroke="#9040d0" stroke-width="7" opacity=".72"/>
+<text x="1440" y="172" font-size="10" fill="rgba(180,100,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
+<text x="1322" y="252" font-size="10" fill="rgba(180,100,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
+<text x="1590" y="242" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<text x="1440" y="308" font-size="10" fill="rgba(180,100,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
 
-<!-- CENTRAL static  positions unchanged, correct -->
-<line x1="562" y1="318" x2="678" y2="312" stroke="#00c850" stroke-width="3" opacity=".50"/>
-<line x1="758" y1="310" x2="876" y2="310" stroke="#00c850" stroke-width="3" opacity=".50"/>
-<line x1="520" y1="358" x2="520" y2="450" stroke="#00c850" stroke-width="3" opacity=".48"/>
-<line x1="724" y1="354" x2="728" y2="456" stroke="#00c850" stroke-width="3" opacity=".50"/>
-<line x1="916" y1="352" x2="926" y2="448" stroke="#00c850" stroke-width="3" opacity=".48"/>
-<line x1="562" y1="494" x2="686" y2="498" stroke="#00c850" stroke-width="3" opacity=".50"/>
-<line x1="774" y1="492" x2="882" y2="486" stroke="#9020e0" stroke-width="8" opacity=".62"/>
-<line x1="748" y1="534" x2="798" y2="622" stroke="#a3e635" stroke-width="5" opacity=".50"/>
-<line x1="740" y1="540" x2="792" y2="628" stroke="#00c850" stroke-width="2.5" opacity=".38"/>
-<line x1="732" y1="542" x2="706" y2="852" stroke="#00c850" stroke-width="9" opacity=".55"/>
-<line x1="926" y1="534" x2="862" y2="622" stroke="#00c850" stroke-width="6" opacity=".50"/>
-<line x1="932" y1="540" x2="868" y2="628" stroke="#00c850" stroke-width="2.5" opacity=".38"/>
-<line x1="822" y1="702" x2="876" y2="852" stroke="#00c850" stroke-width="6" opacity=".50"/>
-<line x1="830" y1="704" x2="882" y2="854" stroke="#a3e635" stroke-width="4" opacity=".45"/>
-<line x1="560" y1="802" x2="662" y2="862" stroke="#00c850" stroke-width="2.5" opacity=".45"/>
-<line x1="744" y1="892" x2="832" y2="892" stroke="#ff3030" stroke-width="11" opacity=".80"/>
-<text x="612" y="304" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="796" y="303" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="500" y="408" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="734" y="408" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="936" y="403" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="610" y="488" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="816" y="476" font-size="10" fill="rgba(200,140,255,.6)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
-<text x="750" y="580" font-size="10" fill="rgba(180,230,80,.55)" font-family="Segoe UI,sans-serif" font-weight="600">200G</text>
-<text x="706" y="704" font-size="11" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">4×100G</text>
-<text x="886" y="578" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
-<text x="868" y="782" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">400G</text>
-<text x="604" y="836" font-size="10" fill="rgba(0,230,120,.5)" font-family="Segoe UI,sans-serif" font-weight="600">100G</text>
-<text x="770" y="880" font-size="11" fill="rgba(255,120,120,.75)" font-family="Segoe UI,sans-serif" font-weight="800">4×100G ⚠</text>
+<!-- CENTRAL intra (green 100G + cyan 200G + purple 400G DWDM — all static, from PDF) -->
+<!-- Nodes: 9031(512,310) 9019(716,300) 9003(938,302)                                 -->
+<!--        9025(512,490) 9053(730,498) 9015(952,488)                                 -->
+<!--        9013(830,660) 9016(526,808) 9005SH(706,900) 9005DC(916,900)               -->
 
-<!-- ════════════════════════════════════════ -->
-<!-- INTERREGIONAL LINKS — ANIMATED ONLY    -->
-<!-- ════════════════════════════════════════ -->
+<!-- 9031↔9019 100G green -->
+<line x1="558" y1="310" x2="678" y2="304" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<text x="614" y="298" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9019↔9003 100G green -->
+<line x1="762" y1="302" x2="898" y2="304" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<text x="826" y="296" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9031↔9025 100G green -->
+<line x1="516" y1="352" x2="516" y2="450" stroke="#22cc44" stroke-width="2.5" opacity=".58"/>
+<text x="524" y="404" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9019↔9053 100G green -->
+<line x1="720" y1="346" x2="724" y2="458" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<text x="732" y="406" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9003↔9015 100G green -->
+<line x1="942" y1="346" x2="950" y2="448" stroke="#22cc44" stroke-width="2.5" opacity=".58"/>
+<text x="958" y="400" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9025↔9053 100G green -->
+<line x1="558" y1="490" x2="690" y2="496" stroke="#22cc44" stroke-width="2.5" opacity=".60"/>
+<text x="620" y="484" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9053↔9015 400G purple DWDM (PDF: 400G) -->
+<line x1="780" y1="490" x2="904" y2="482" stroke="#9040d0" stroke-width="8" opacity=".75"/>
+<text x="840" y="474" font-size="10" fill="rgba(180,100,255,.78)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
+<!-- 9053↔9013 100G+200G from PDF -->
+<line x1="752" y1="540" x2="806" y2="620" stroke="#22cc44" stroke-width="2.5" opacity=".58"/>
+<text x="762" y="582" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9053↔9005SH 2x100G from PDF -->
+<line x1="736" y1="544" x2="710" y2="860" stroke="#22cc44" stroke-width="5" opacity=".60"/>
+<text x="714" y="714" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">2×100G</text>
+<!-- 9015↔9013 100G green -->
+<line x1="940" y1="532" x2="872" y2="622" stroke="#22cc44" stroke-width="2.5" opacity=".58"/>
+<text x="912" y="580" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9013↔9005DC 400G purple DWDM -->
+<line x1="828" y1="702" x2="890" y2="860" stroke="#9040d0" stroke-width="8" opacity=".72"/>
+<text x="854" y="786" font-size="10" fill="rgba(180,100,255,.78)" font-family="Segoe UI,sans-serif" font-weight="700">400G</text>
+<!-- 9013↔9005SH 100G -->
+<line x1="808" y1="702" x2="728" y2="862" stroke="#22cc44" stroke-width="2.5" opacity=".55"/>
+<text x="752" y="790" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9016↔9005SH 100G -->
+<line x1="560" y1="808" x2="668" y2="870" stroke="#22cc44" stroke-width="2.5" opacity=".55"/>
+<text x="604" y="838" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9016↔9025 100G -->
+<line x1="524" y1="768" x2="518" y2="534" stroke="#22cc44" stroke-width="2.5" opacity=".50"/>
+<text x="502" y="654" font-size="10" fill="rgba(60,220,80,.65)" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+<!-- 9005SH↔9005DC 4×100G green -->
+<line x1="756" y1="900" x2="858" y2="900" stroke="#22cc44" stroke-width="10" opacity=".72"/>
+<text x="800" y="886" font-size="11" fill="rgba(60,220,80,.72)" font-family="Segoe UI,sans-serif" font-weight="800">4×100G</text>
 
-<!-- HN01(322,183)→9031(516,318) IR teal -->
-<line x1="356" y1="192" x2="488" y2="308" stroke="#00ffe8" stroke-width="4" stroke-dasharray="14 8"
-  style="animation:irflow 1.4s linear infinite" opacity=".90" filter="url(#irglow)"/>
-<text x="410" y="236" font-size="12" fill="#00ffe8" font-family="Segoe UI,sans-serif" font-weight="800">IR 100G</text>
+<!-- ══════════════════════════════════════════════════════════════════ -->
+<!-- ALL INTER-REGION LINKS — ANIMATED — complete from PDF page 6    -->
+<!-- RED dashed   = 100G Inter-Region                                -->
+<!-- CYAN dashed  = 200G Intra/Inter-Region                          -->
+<!-- PURPLE dashed= 400G Cisco DWDM Inter                            -->
+<!-- Node coords:                                                     -->
+<!--  HFR7(148,178) HN01(322,170) TABK(72,272) 9300(264,272)        -->
+<!--  ASAM(72,438)  DBHG(226,420) MDNE(210,516)                     -->
+<!--  SNJD(72,660)  WADL(248,648) JDCN(72,748) MAKW(72,836)         -->
+<!--  TARP(238,756)                                                   -->
+<!--  NMNT(78,988)  ABES(242,988)                                    -->
+<!--  FRDO(1348,188) KBRP(1572,174) AFII(1348,306) DAEE(1572,306)   -->
+<!--  9031(512,310) 9019(716,300) 9003(938,302)                      -->
+<!--  9025(512,490) 9053(730,498) 9015(952,488)                      -->
+<!--  9013(830,660) 9016(526,808)                                     -->
+<!--  9005SH(706,900) 9005DC(916,900)                                -->
+<!-- ══════════════════════════════════════════════════════════════════ -->
 
-<!-- 9300(262,285)→9031(516,318) IR teal -->
-<line x1="296" y1="290" x2="486" y2="313" stroke="#00ffe8" stroke-width="3.5" stroke-dasharray="12 8"
-  style="animation:irflow 1.6s linear infinite" opacity=".82" filter="url(#irglow)"/>
-<text x="386" y="292" font-size="10" fill="#00ffe8" font-family="Segoe UI,sans-serif" font-weight="700">IR 100G</text>
+<!-- 1. HN01→9031  100G red -->
+<line x1="356" y1="182" x2="484" y2="302" stroke="#dd2222" stroke-width="3.5" stroke-dasharray="14 8"
+  style="animation:irflow 1.5s linear infinite" opacity=".92" filter="url(#irf)"/>
+<text x="408" y="228" font-size="11" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- HN01(322,183)→9003(916,310) Dark Fiber -->
-<line x1="360" y1="198" x2="878" y2="308" stroke="#ffb840" stroke-width="2" stroke-dasharray="4 18"
-  style="animation:irflow 4.5s linear infinite" opacity=".60"/>
-<text x="618" y="234" font-size="11" fill="#ffcc60" font-family="Segoe UI,sans-serif" font-weight="700">Dark Fiber</text>
+<!-- 2. 9300→9031  100G red -->
+<line x1="296" y1="278" x2="484" y2="308" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.8s linear infinite" opacity=".84" filter="url(#irf)"/>
+<text x="386" y="284" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- ASAM(72,450)→SNJD(72,676) 200G N→W IR -->
-<line x1="78" y1="472" x2="78" y2="638" stroke="#a3e635" stroke-width="4" stroke-dasharray="12 8"
-  style="animation:irflow 1.7s linear infinite" opacity=".78" filter="url(#irglow)"/>
-<text x="42" y="557" font-size="10" fill="#d9f99d" font-family="Segoe UI,sans-serif" font-weight="700">200G</text>
+<!-- 3. HN01→9003  100G red -->
+<line x1="358" y1="188" x2="900" y2="304" stroke="#dd2222" stroke-width="2.5" stroke-dasharray="10 10"
+  style="animation:irflow 2s linear infinite" opacity=".65" filter="url(#irf)"/>
+<text x="628" y="232" font-size="10" fill="#ff8888" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- MLNE(212,520)→9025(516,494) IR purple -->
-<line x1="234" y1="520" x2="486" y2="496" stroke="#cc88ff" stroke-width="5" stroke-dasharray="16 8"
-  style="animation:irflow 1.5s linear infinite" opacity=".90" filter="url(#irglow)"/>
-<text x="354" y="496" font-size="12" fill="#e0b0ff" font-family="Segoe UI,sans-serif" font-weight="800">IR 100G</text>
+<!-- 4. ASAM→9025  200G cyan — Northern→Central -->
+<line x1="110" y1="448" x2="482" y2="488" stroke="#00ccee" stroke-width="5" stroke-dasharray="16 8"
+  style="animation:irflow 1.4s linear infinite" opacity=".93" filter="url(#irf)"/>
+<text x="292" y="460" font-size="11" fill="#44eeff" font-family="Segoe UI,sans-serif" font-weight="800">200G</text>
 
-<!-- WADL(244,660)→9025(516,494) IR blue -->
-<line x1="272" y1="658" x2="488" y2="502" stroke="#70b0ff" stroke-width="5" stroke-dasharray="16 8"
-  style="animation:irflow 1.6s linear infinite" opacity=".88" filter="url(#irglow)"/>
-<text x="374" y="566" font-size="12" fill="#90c8ff" font-family="Segoe UI,sans-serif" font-weight="800">IR 200G</text>
+<!-- ASAM→SNJD moved to after-nodes section for correct paint order -->
 
-<!-- TARP(234,768)→9016(526,800) IR blue -->
-<line x1="256" y1="768" x2="506" y2="800" stroke="#70b0ff" stroke-width="4" stroke-dasharray="14 8"
-  style="animation:irflow 1.8s linear infinite" opacity=".82" filter="url(#irglow)"/>
-<text x="374" y="774" font-size="11" fill="#90c8ff" font-family="Segoe UI,sans-serif" font-weight="700">IR 100G</text>
+<!-- 6. ASAM→TABK  100G red — Northern→N.Central (PDF: ASAM connects to TABK) -->
+<line x1="88" y1="402" x2="82" y2="306" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.7s linear infinite" opacity=".86" filter="url(#irf)"/>
+<text x="56" y="354" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- TARP(234,768)→9025(516,494) IR blue -->
-<line x1="252" y1="752" x2="488" y2="504" stroke="#70b0ff" stroke-width="3.5" stroke-dasharray="13 8"
-  style="animation:irflow 1.9s linear infinite" opacity=".75" filter="url(#irglow)"/>
-<text x="360" y="614" font-size="10" fill="#90c8ff" font-family="Segoe UI,sans-serif" font-weight="700">IR 100G</text>
+<!-- 7. DBHG→TABK  100G red — Northern→N.Central (PDF: DBHG connects to TABK) -->
+<line x1="208" y1="386" x2="96" y2="256" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.9s linear infinite" opacity=".84" filter="url(#irf)"/>
+<text x="142" y="316" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- FRDO(1326,200)→9003(916,310) IR violet -->
-<line x1="1312" y1="210" x2="960" y2="312" stroke="#c0a0ff" stroke-width="5" stroke-dasharray="16 8"
-  style="animation:irflow 1.4s linear infinite" opacity=".92" filter="url(#irglow)"/>
-<text x="1136" y="246" font-size="12" fill="#d0b8ff" font-family="Segoe UI,sans-serif" font-weight="800">IR 100G</text>
+<!-- 8. DBHG→9031  100G red — Northern→Central -->
+<line x1="260" y1="406" x2="482" y2="316" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.7s linear infinite" opacity=".84" filter="url(#irf)"/>
+<text x="368" y="350" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- FRDO(1326,200)→9019(716,308) IR violet -->
-<line x1="1316" y1="220" x2="758" y2="310" stroke="#c0a0ff" stroke-width="4" stroke-dasharray="14 8"
-  style="animation:irflow 1.6s linear infinite" opacity=".84" filter="url(#irglow)"/>
-<text x="1038" y="252" font-size="10" fill="#d0b8ff" font-family="Segoe UI,sans-serif" font-weight="700">IR 100G</text>
+<!-- 9. DBHG→9019  100G red — Northern→Central -->
+<line x1="262" y1="410" x2="686" y2="302" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 2s linear infinite" opacity=".80" filter="url(#irf)"/>
+<text x="472" y="344" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
 
-<!-- KBLP(1568,185)→9003(916,310) IR 400G violet thick -->
-<line x1="1548" y1="198" x2="964" y2="312" stroke="#c0a0ff" stroke-width="7" stroke-dasharray="18 8"
-  style="animation:irflow 1.2s linear infinite" opacity=".95" filter="url(#irglow)"/>
-<text x="1256" y="234" font-size="13" fill="#d0b8ff" font-family="Segoe UI,sans-serif" font-weight="900">IR 400G</text>
+<!-- 10. MDNE→9025  100G red — Northern→Central -->
+<line x1="240" y1="514" x2="482" y2="492" stroke="#dd2222" stroke-width="3.5" stroke-dasharray="14 8"
+  style="animation:irflow 1.5s linear infinite" opacity=".90" filter="url(#irf)"/>
+<text x="358" y="496" font-size="11" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="800">100G</text>
 
-<!-- AFII(1326,318)→9003(916,310) IR violet -->
-<line x1="1314" y1="320" x2="962" y2="316" stroke="#c0a0ff" stroke-width="4" stroke-dasharray="14 8"
-  style="animation:irflow 1.7s linear infinite" opacity=".78" filter="url(#irglow)"/>
-<text x="1138" y="312" font-size="10" fill="#d0b8ff" font-family="Segoe UI,sans-serif" font-weight="700">IR 100G</text>
+<!-- 11. WADL→MDNE  200G cyan — Western→Northern -->
+<line x1="242" y1="610" x2="218" y2="536" stroke="#00ccee" stroke-width="5" stroke-dasharray="16 8"
+  style="animation:irflow 1.5s linear infinite" opacity=".90" filter="url(#irf)"/>
+<text x="194" y="576" font-size="10" fill="#44eeff" font-family="Segoe UI,sans-serif" font-weight="700">200G</text>
 
-<!-- ═══════════════════════ -->
-<!-- NODES                  -->
-<!-- ═══════════════════════ -->
+<!-- 12. WADL→9025  100G red — Western→Central -->
+<line x1="278" y1="644" x2="482" y2="500" stroke="#dd2222" stroke-width="3.5" stroke-dasharray="14 8"
+  style="animation:irflow 1.6s linear infinite" opacity=".88" filter="url(#irf)"/>
+<text x="378" y="558" font-size="11" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="800">100G</text>
 
-<!-- ── N.CENTRAL teal HFR7(148,190) HN01(322,183) TABK(72,285) 9300(262,285) ── -->
+<!-- 13. TARP→9016  100G red — Western→Central -->
+<line x1="264" y1="754" x2="504" y2="806" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.8s linear infinite" opacity=".86" filter="url(#irf)"/>
+<text x="380" y="772" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- 14. TARP→9025  100G red — Western→Central -->
+<line x1="258" y1="740" x2="482" y2="502" stroke="#dd2222" stroke-width="2.5" stroke-dasharray="11 9"
+  style="animation:irflow 2.1s linear infinite" opacity=".72" filter="url(#irf)"/>
+<text x="362" y="610" font-size="10" fill="#ff8888" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- 15. MAKW→9016  100G red — Western→Central -->
+<line x1="110" y1="832" x2="490" y2="812" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.8s linear infinite" opacity=".84" filter="url(#irf)"/>
+<text x="298" y="816" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- NMNT→MAKW moved to after-nodes section for correct paint order -->
+
+<!-- 17. NMNT→9016  100G red — Southern→Central -->
+<line x1="118" y1="974" x2="490" y2="824" stroke="#dd2222" stroke-width="2.5" stroke-dasharray="11 9"
+  style="animation:irflow 2.2s linear infinite" opacity=".72" filter="url(#irf)"/>
+<text x="300" y="912" font-size="10" fill="#ff8888" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- 18. ABES→TARP  100G red — Southern→Western -->
+<line x1="248" y1="964" x2="244" y2="782" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 2s linear infinite" opacity=".82" filter="url(#irf)"/>
+<text x="258" y="874" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- 19. FRDO→9003  100G red — Eastern→Central -->
+<line x1="1330" y1="204" x2="984" y2="308" stroke="#dd2222" stroke-width="3.5" stroke-dasharray="14 8"
+  style="animation:irflow 1.4s linear infinite" opacity=".92" filter="url(#irf)"/>
+<text x="1158" y="240" font-size="11" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="800">100G</text>
+
+<!-- 20. FRDO→9019  100G red — Eastern→Central -->
+<line x1="1332" y1="214" x2="762" y2="304" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.7s linear infinite" opacity=".84" filter="url(#irf)"/>
+<text x="1046" y="246" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- 21. KBRP→9003  400G purple — Eastern→Central (biggest capacity link) -->
+<line x1="1554" y1="194" x2="986" y2="310" stroke="#9040d0" stroke-width="8" stroke-dasharray="18 8"
+  style="animation:irflow 1.2s linear infinite" opacity=".96" filter="url(#irf)"/>
+<text x="1272" y="234" font-size="12" fill="#c080ff" font-family="Segoe UI,sans-serif" font-weight="900">400G</text>
+
+<!-- 22. AFII→9003  100G red — Eastern→Central -->
+<line x1="1330" y1="312" x2="986" y2="310" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.7s linear infinite" opacity=".84" filter="url(#irf)"/>
+<text x="1158" y="304" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- 23. DAEE→9015  100G red — Eastern→Central -->
+<line x1="1554" y1="324" x2="988" y2="486" stroke="#dd2222" stroke-width="3" stroke-dasharray="12 8"
+  style="animation:irflow 1.8s linear infinite" opacity=".80" filter="url(#irf)"/>
+<text x="1274" y="392" font-size="10" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="700">100G</text>
+
+<!-- ═════════════════ NODES ═════════════════ -->
+<!-- Exact device types from PDF tables:       -->
+<!-- ASR9904 = dark navy  ASR9906 = green      -->
+<!-- ASR9910 = salmon/pink  Huawei = not used here -->
+<!-- Use cylinder icons as in reference image   -->
+
+<!-- helper macro as inline SVG groups -->
+<!-- cylinder(cx,cy,rx,ry,fill,stroke,label,sublabel,spindir,spinspeed,outerR) -->
+
+<!-- ── N.CENTRAL ── HFR7(ASR9904=navy) HN01(ASR9904=navy) TABK(ASR9904=navy) 9300(ASR9904=navy) -->
+<!-- HFR7 148,178 -->
 <g style="cursor:pointer">
-  <circle cx="148" cy="190" r="50" fill="none" stroke="rgba(0,200,180,.14)" stroke-width="1.5" stroke-dasharray="7 4" style="animation:spin 25s linear infinite;transform-origin:148px 190px"/>
-  <circle cx="148" cy="190" r="38" fill="rgba(0,28,24,.92)" stroke="#00c8b4" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="148" cy="190" r="45" fill="none" stroke="#00c8b4" stroke-width="5" stroke-dasharray="78 204" stroke-dashoffset="-14" opacity=".88"/>
-  <text x="148" y="186" text-anchor="middle" font-size="15" fill="#e0fff8" font-family="Segoe UI,sans-serif" font-weight="800">HFR7</text>
-  <text x="148" y="202" text-anchor="middle" font-size="9" fill="#00c8b4" font-family="Segoe UI,sans-serif">100G</text>
+  <circle cx="148" cy="178" r="48" fill="none" stroke="rgba(100,160,100,.18)" stroke-width="1.5"
+    stroke-dasharray="7 4" style="animation:spin 26s linear infinite;transform-origin:148px 178px"/>
+  <circle cx="148" cy="178" r="36" fill="#0d2040" stroke="#2255aa" stroke-width="2.5" filter="url(#g3)"/>
+  <circle cx="148" cy="178" r="43" fill="none" stroke="#2255aa" stroke-width="5"
+    stroke-dasharray="74 196" stroke-dashoffset="-13" opacity=".85"/>
+  <text x="148" y="174" text-anchor="middle" font-size="14" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">HFR7</text>
+  <text x="148" y="189" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.65)" font-family="Segoe UI,sans-serif">ASR9904</text>
 </g>
+<!-- HN01 322,170 -->
 <g style="cursor:pointer">
-  <circle cx="322" cy="183" r="46" fill="none" stroke="rgba(0,200,180,.12)" stroke-width="1.5" stroke-dasharray="7 4" style="animation:spinr 30s linear infinite;transform-origin:322px 183px"/>
-  <circle cx="322" cy="183" r="35" fill="rgba(0,28,24,.92)" stroke="#00c8b4" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="322" cy="183" r="42" fill="none" stroke="#00c8b4" stroke-width="5" stroke-dasharray="62 202" stroke-dashoffset="-13" opacity=".85"/>
-  <text x="322" y="179" text-anchor="middle" font-size="14" fill="#e0fff8" font-family="Segoe UI,sans-serif" font-weight="800">HN01</text>
-  <text x="322" y="194" text-anchor="middle" font-size="9" fill="#00c8b4" font-family="Segoe UI,sans-serif">100G</text>
+  <circle cx="322" cy="170" r="44" fill="none" stroke="rgba(100,160,100,.16)" stroke-width="1.5"
+    stroke-dasharray="7 4" style="animation:spinr 30s linear infinite;transform-origin:322px 170px"/>
+  <circle cx="322" cy="170" r="33" fill="#0d2040" stroke="#2255aa" stroke-width="2.5" filter="url(#g3)"/>
+  <circle cx="322" cy="170" r="40" fill="none" stroke="#2255aa" stroke-width="5"
+    stroke-dasharray="60 191" stroke-dashoffset="-12" opacity=".82"/>
+  <text x="322" y="166" text-anchor="middle" font-size="14" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">HN01</text>
+  <text x="322" y="181" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.65)" font-family="Segoe UI,sans-serif">ASR9904</text>
 </g>
+<!-- TABK 72,272 -->
 <g style="cursor:pointer">
-  <circle cx="72" cy="285" r="38" fill="rgba(0,28,24,.92)" stroke="#00c8b4" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="72" cy="285" r="34" fill="none" stroke="#00c8b4" stroke-width="4" stroke-dasharray="60 154" stroke-dashoffset="-11" opacity=".80"/>
-  <text x="72" y="281" text-anchor="middle" font-size="13" fill="#e0fff8" font-family="Segoe UI,sans-serif" font-weight="800">TABK</text>
-  <text x="72" y="296" text-anchor="middle" font-size="8" fill="#00c8b4" font-family="Segoe UI,sans-serif">100G</text>
+  <circle cx="72" cy="272" r="36" fill="#0d2040" stroke="#2255aa" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="72" cy="272" r="32" fill="none" stroke="#2255aa" stroke-width="4"
+    stroke-dasharray="58 143" stroke-dashoffset="-10" opacity=".78"/>
+  <text x="72" y="268" text-anchor="middle" font-size="13" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">TABK</text>
+  <text x="72" y="283" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.6)" font-family="Segoe UI,sans-serif">ASR9904</text>
 </g>
+<!-- 9300 264,272 -->
 <g style="cursor:pointer">
-  <circle cx="262" cy="285" r="40" fill="rgba(0,28,24,.92)" stroke="#00c8b4" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="262" cy="285" r="36" fill="none" stroke="#00c8b4" stroke-width="4.5" stroke-dasharray="90 136" stroke-dashoffset="-12" opacity=".84"/>
-  <text x="262" y="281" text-anchor="middle" font-size="13" fill="#e0fff8" font-family="Segoe UI,sans-serif" font-weight="800">9300</text>
-  <text x="262" y="296" text-anchor="middle" font-size="8" fill="#00c8b4" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-
-<!-- ── NORTHERN purple ASAM(72,450) DBHG(224,435) MLNE(212,520) ── -->
-<g style="cursor:pointer">
-  <circle cx="72" cy="450" r="48" fill="none" stroke="rgba(160,80,255,.14)" stroke-width="1.5" stroke-dasharray="7 4" style="animation:spin 18s linear infinite;transform-origin:72px 450px"/>
-  <circle cx="72" cy="450" r="36" fill="rgba(16,4,36,.92)" stroke="#a050ff" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="72" cy="450" r="44" fill="none" stroke="#a050ff" stroke-width="5" stroke-dasharray="135 141" stroke-dashoffset="-14" opacity=".90"/>
-  <text x="72" y="446" text-anchor="middle" font-size="13" fill="#f0e4ff" font-family="Segoe UI,sans-serif" font-weight="800">ASAM</text>
-  <text x="72" y="461" text-anchor="middle" font-size="8" fill="#c080ff" font-family="Segoe UI,sans-serif">200G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="224" cy="435" r="38" fill="rgba(16,4,36,.92)" stroke="#a050ff" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="224" cy="435" r="34" fill="none" stroke="#a050ff" stroke-width="4" stroke-dasharray="88 126" stroke-dashoffset="-11" opacity=".82"/>
-  <text x="224" y="431" text-anchor="middle" font-size="13" fill="#f0e4ff" font-family="Segoe UI,sans-serif" font-weight="800">DBHG</text>
-  <text x="224" y="446" text-anchor="middle" font-size="8" fill="#c080ff" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="212" cy="520" r="36" fill="rgba(16,4,36,.92)" stroke="#a050ff" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="212" cy="520" r="32" fill="none" stroke="#a050ff" stroke-width="4" stroke-dasharray="70 131" stroke-dashoffset="-10" opacity=".80"/>
-  <text x="212" y="516" text-anchor="middle" font-size="13" fill="#f0e4ff" font-family="Segoe UI,sans-serif" font-weight="800">MLNE</text>
-  <text x="212" y="531" text-anchor="middle" font-size="8" fill="#c080ff" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-
-<!-- ── WESTERN blue SNJD(72,676) WADL(244,660) JDCN(72,758) MAKW(72,840) TARP(234,768) ── -->
-<g style="cursor:pointer">
-  <circle cx="72" cy="676" r="48" fill="none" stroke="rgba(0,100,255,.14)" stroke-width="1.5" stroke-dasharray="7 4" style="animation:spin 14s linear infinite;transform-origin:72px 676px"/>
-  <circle cx="72" cy="676" r="36" fill="rgba(2,6,28,.92)" stroke="#3080ff" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="72" cy="676" r="44" fill="none" stroke="#3080ff" stroke-width="5" stroke-dasharray="148 129" stroke-dashoffset="-14" opacity=".90"/>
-  <text x="72" y="672" text-anchor="middle" font-size="13" fill="#e0f0ff" font-family="Segoe UI,sans-serif" font-weight="800">SNJD</text>
-  <text x="72" y="687" text-anchor="middle" font-size="8" fill="#70b0ff" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="244" cy="660" r="44" fill="rgba(2,6,28,.92)" stroke="#3080ff" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="244" cy="660" r="38" fill="none" stroke="#3080ff" stroke-width="5" stroke-dasharray="148 90" stroke-dashoffset="-12" opacity=".88"/>
-  <text x="244" y="656" text-anchor="middle" font-size="13" fill="#e0f0ff" font-family="Segoe UI,sans-serif" font-weight="800">WADL</text>
-  <text x="244" y="671" text-anchor="middle" font-size="8" fill="#70b0ff" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="72" cy="758" r="42" fill="rgba(2,6,28,.92)" stroke="#3080ff" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="72" cy="758" r="36" fill="none" stroke="#3080ff" stroke-width="4.5" stroke-dasharray="122 104" stroke-dashoffset="-12" opacity=".85"/>
-  <text x="72" y="754" text-anchor="middle" font-size="13" fill="#e0f0ff" font-family="Segoe UI,sans-serif" font-weight="800">JDCN</text>
-  <text x="72" y="769" text-anchor="middle" font-size="8" fill="#70b0ff" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="72" cy="840" r="40" fill="rgba(2,6,28,.92)" stroke="#3080ff" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="72" cy="840" r="34" fill="none" stroke="#3080ff" stroke-width="4.5" stroke-dasharray="104 110" stroke-dashoffset="-11" opacity=".83"/>
-  <text x="72" y="836" text-anchor="middle" font-size="13" fill="#e0f0ff" font-family="Segoe UI,sans-serif" font-weight="800">MAKW</text>
-  <text x="72" y="851" text-anchor="middle" font-size="8" fill="#70b0ff" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="234" cy="768" r="40" fill="rgba(2,6,28,.92)" stroke="#3080ff" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="234" cy="768" r="34" fill="none" stroke="#3080ff" stroke-width="4.5" stroke-dasharray="88 126" stroke-dashoffset="-11" opacity=".82"/>
-  <text x="234" y="764" text-anchor="middle" font-size="13" fill="#e0f0ff" font-family="Segoe UI,sans-serif" font-weight="800">TARP</text>
-  <text x="234" y="779" text-anchor="middle" font-size="8" fill="#70b0ff" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-
-<!-- ── SOUTHERN amber NMNT(78,1000) ABES(236,1000) ── -->
-<g style="cursor:pointer">
-  <circle cx="78" cy="1000" r="44" fill="rgba(26,14,0,.92)" stroke="#ffa020" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="78" cy="1000" r="38" fill="none" stroke="#ffa020" stroke-width="4.5" stroke-dasharray="50 189" stroke-dashoffset="-12" opacity=".80"/>
-  <text x="78" y="996" text-anchor="middle" font-size="13" fill="#fff4e0" font-family="Segoe UI,sans-serif" font-weight="800">NMNT</text>
-  <text x="78" y="1011" text-anchor="middle" font-size="8" fill="#ffcc44" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="236" cy="1000" r="40" fill="rgba(26,14,0,.92)" stroke="#ffa020" stroke-width="2" filter="url(#glow4)"/>
-  <circle cx="236" cy="1000" r="34" fill="none" stroke="#ffa020" stroke-width="4.5" stroke-dasharray="70 144" stroke-dashoffset="-11" opacity=".82"/>
-  <text x="236" y="996" text-anchor="middle" font-size="13" fill="#fff4e0" font-family="Segoe UI,sans-serif" font-weight="800">ABES</text>
-  <text x="236" y="1011" text-anchor="middle" font-size="8" fill="#ffcc44" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-
-<!-- ── EASTERN violet FRDO(1326,200) KBLP(1568,185) AFII(1326,318) DAEE(1568,315) ── -->
-<g style="cursor:pointer">
-  <circle cx="1326" cy="200" r="66" fill="none" stroke="rgba(120,60,255,.15)" stroke-width="1.5" stroke-dasharray="8 5" style="animation:spin 11s linear infinite;transform-origin:1326px 200px"/>
-  <circle cx="1326" cy="200" r="52" fill="rgba(12,4,28,.92)" stroke="#7840ff" stroke-width="3" filter="url(#glow4)"/>
-  <circle cx="1326" cy="200" r="60" fill="none" stroke="#7840ff" stroke-width="7" stroke-dasharray="332 45" stroke-dashoffset="-20" opacity=".92"/>
-  <text x="1326" y="196" text-anchor="middle" font-size="16" fill="#ede0ff" font-family="Segoe UI,sans-serif" font-weight="800">FRDO</text>
-  <text x="1326" y="214" text-anchor="middle" font-size="10" fill="#a078ff" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="1568" cy="185" r="60" fill="none" stroke="rgba(120,60,255,.13)" stroke-width="1.5" stroke-dasharray="7 4" style="animation:spinr 15s linear infinite;transform-origin:1568px 185px"/>
-  <circle cx="1568" cy="185" r="47" fill="rgba(12,4,28,.92)" stroke="#7840ff" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="1568" cy="185" r="55" fill="none" stroke="#7840ff" stroke-width="6.5" stroke-dasharray="272 74" stroke-dashoffset="-18" opacity=".88"/>
-  <text x="1568" y="181" text-anchor="middle" font-size="15" fill="#ede0ff" font-family="Segoe UI,sans-serif" font-weight="800">KBLP</text>
-  <text x="1568" y="197" text-anchor="middle" font-size="9" fill="#a078ff" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<!-- AFII ALARM -->
-<g style="cursor:pointer">
-  <circle cx="1326" cy="318" r="1" fill="none" stroke="#ffa020" stroke-width="2" opacity="0">
-    <animate attributeName="r" values="54;100" dur="2.2s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values=".7;0" dur="2.2s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="1326" cy="318" r="62" fill="none" stroke="#ffa020" stroke-width="2" style="animation:alarm .6s ease-in-out infinite"/>
-  <circle cx="1326" cy="318" r="50" fill="rgba(28,8,0,.94)" stroke="#ffa020" stroke-width="3" filter="url(#glow12)"/>
-  <circle cx="1326" cy="318" r="58" fill="none" stroke="#ffa020" stroke-width="7" stroke-dasharray="342 22" stroke-dashoffset="-19" opacity=".97"/>
-  <text x="1326" y="314" text-anchor="middle" font-size="16" fill="#ede0ff" font-family="Segoe UI,sans-serif" font-weight="800">AFII</text>
-  <text x="1326" y="332" text-anchor="middle" font-size="9" fill="#ffcc44" font-family="Segoe UI,sans-serif">⚠ ALARM</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="1568" cy="315" r="56" fill="rgba(12,4,28,.92)" stroke="#7840ff" stroke-width="2.5" filter="url(#glow4)"/>
-  <circle cx="1568" cy="315" r="50" fill="none" stroke="#7840ff" stroke-width="6" stroke-dasharray="248 66" stroke-dashoffset="-16" opacity=".85"/>
-  <text x="1568" y="311" text-anchor="middle" font-size="15" fill="#ede0ff" font-family="Segoe UI,sans-serif" font-weight="800">DAEE</text>
-  <text x="1568" y="327" text-anchor="middle" font-size="9" fill="#a078ff" font-family="Segoe UI,sans-serif">400G</text>
+  <circle cx="264" cy="272" r="38" fill="#0d2040" stroke="#2255aa" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="264" cy="272" r="34" fill="none" stroke="#2255aa" stroke-width="4.5"
+    stroke-dasharray="88 126" stroke-dashoffset="-11" opacity=".82"/>
+  <text x="264" y="268" text-anchor="middle" font-size="13" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">9300</text>
+  <text x="264" y="283" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.6)" font-family="Segoe UI,sans-serif">ASR9904</text>
 </g>
 
-<!-- ── CENTRAL green  9031(516,318) 9019(716,308) 9003(916,310) ── -->
-<!--                  9025(516,494) 9053(726,500) 9015(930,492) ── -->
-<!--                  9013(818,662) 9016(526,800) 9005SH(696,892) 9005DC(898,892) -->
+<!-- ── NORTHERN ── ASAM(ASR9906=green) DBHG(ASR9904=navy) MDNE(ASR9906=green) -->
+<!-- ASAM 72,438 -->
 <g style="cursor:pointer">
-  <circle cx="516" cy="318" r="70" fill="none" stroke="rgba(0,200,80,.16)" stroke-width="1.5" stroke-dasharray="9 5" style="animation:spin 12s linear infinite;transform-origin:516px 318px"/>
-  <circle cx="516" cy="318" r="56" fill="rgba(2,14,4,.94)" stroke="#00c850" stroke-width="3" filter="url(#glow4)"/>
-  <circle cx="516" cy="318" r="64" fill="none" stroke="#00c850" stroke-width="7" stroke-dasharray="252 150" stroke-dashoffset="-21" opacity=".90"/>
-  <text x="516" y="314" text-anchor="middle" font-size="17" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9031</text>
-  <text x="516" y="332" text-anchor="middle" font-size="10" fill="#00e870" font-family="Segoe UI,sans-serif">100G</text>
+  <circle cx="72" cy="438" r="46" fill="none" stroke="rgba(200,100,100,.16)" stroke-width="1.5"
+    stroke-dasharray="7 4" style="animation:spin 19s linear infinite;transform-origin:72px 438px"/>
+  <circle cx="72" cy="438" r="35" fill="#0a2810" stroke="#228840" stroke-width="2.5" filter="url(#g3)"/>
+  <circle cx="72" cy="438" r="42" fill="none" stroke="#228840" stroke-width="5"
+    stroke-dasharray="130 134" stroke-dashoffset="-13" opacity=".88"/>
+  <text x="72" y="434" text-anchor="middle" font-size="13" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">ASAM</text>
+  <text x="72" y="449" text-anchor="middle" font-size="8" fill="rgba(80,200,100,.65)" font-family="Segoe UI,sans-serif">ASR9906</text>
 </g>
+<!-- DBHG 226,420 -->
 <g style="cursor:pointer">
-  <circle cx="716" cy="308" r="66" fill="none" stroke="rgba(0,200,80,.15)" stroke-width="1.5" stroke-dasharray="9 5" style="animation:spinr 16s linear infinite;transform-origin:716px 308px"/>
-  <circle cx="716" cy="308" r="53" fill="rgba(2,14,4,.94)" stroke="#00c850" stroke-width="3" filter="url(#glow4)"/>
-  <circle cx="716" cy="308" r="60" fill="none" stroke="#00c850" stroke-width="7" stroke-dasharray="218 159" stroke-dashoffset="-20" opacity=".88"/>
-  <text x="716" y="304" text-anchor="middle" font-size="17" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9019</text>
-  <text x="716" y="322" text-anchor="middle" font-size="10" fill="#00e870" font-family="Segoe UI,sans-serif">100G</text>
+  <circle cx="226" cy="420" r="36" fill="#0d2040" stroke="#2255aa" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="226" cy="420" r="32" fill="none" stroke="#2255aa" stroke-width="4"
+    stroke-dasharray="84 117" stroke-dashoffset="-10" opacity=".78"/>
+  <text x="226" y="416" text-anchor="middle" font-size="13" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">DBHG</text>
+  <text x="226" y="431" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.6)" font-family="Segoe UI,sans-serif">ASR9904</text>
 </g>
-<!-- 9003 GATEWAY biggest -->
+<!-- MDNE 210,516 -->
 <g style="cursor:pointer">
-  <circle cx="916" cy="310" r="82" fill="none" stroke="rgba(0,200,80,.20)" stroke-width="2" stroke-dasharray="10 5" style="animation:spin 9s linear infinite;transform-origin:916px 310px"/>
-  <circle cx="916" cy="310" r="67" fill="rgba(2,14,4,.94)" stroke="#00c850" stroke-width="3.5" filter="url(#glow8)"/>
-  <circle cx="916" cy="310" r="75" fill="none" stroke="#00c850" stroke-width="8.5" stroke-dasharray="312 160" stroke-dashoffset="-25" opacity=".96"/>
-  <text x="916" y="306" text-anchor="middle" font-size="19" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9003</text>
-  <text x="916" y="324" text-anchor="middle" font-size="11" fill="#00e870" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="516" cy="494" r="66" fill="none" stroke="rgba(0,200,80,.14)" stroke-width="1.5" stroke-dasharray="8 5" style="animation:spin 18s linear infinite;transform-origin:516px 494px"/>
-  <circle cx="516" cy="494" r="53" fill="rgba(2,14,4,.94)" stroke="#00c850" stroke-width="3" filter="url(#glow4)"/>
-  <circle cx="516" cy="494" r="61" fill="none" stroke="#00c850" stroke-width="7" stroke-dasharray="206 177" stroke-dashoffset="-20" opacity=".88"/>
-  <text x="516" y="490" text-anchor="middle" font-size="17" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9025</text>
-  <text x="516" y="508" text-anchor="middle" font-size="10" fill="#00e870" font-family="Segoe UI,sans-serif">200G</text>
-</g>
-<!-- 9053 MAIN HUB -->
-<g style="cursor:pointer">
-  <circle cx="726" cy="500" r="92" fill="none" stroke="rgba(163,230,53,.22)" stroke-width="2" stroke-dasharray="11 5" style="animation:spin 8s linear infinite;transform-origin:726px 500px"/>
-  <circle cx="726" cy="500" r="77" fill="none" stroke="rgba(163,230,53,.28)" stroke-width="1.5"/>
-  <circle cx="726" cy="500" r="62" fill="rgba(4,16,2,.95)" stroke="#a3e635" stroke-width="4" filter="url(#glow8)"/>
-  <circle cx="726" cy="500" r="85" fill="none" stroke="#a3e635" stroke-width="9" stroke-dasharray="408 126" stroke-dashoffset="-27" opacity=".98"/>
-  <text x="726" y="496" text-anchor="middle" font-size="20" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9053</text>
-  <text x="726" y="514" text-anchor="middle" font-size="11" fill="#a3e635" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="930" cy="492" r="76" fill="none" stroke="rgba(0,200,80,.18)" stroke-width="1.8" stroke-dasharray="9 5" style="animation:spinr 13s linear infinite;transform-origin:930px 492px"/>
-  <circle cx="930" cy="492" r="61" fill="rgba(2,14,4,.94)" stroke="#00c850" stroke-width="3.5" filter="url(#glow4)"/>
-  <circle cx="930" cy="492" r="70" fill="none" stroke="#00c850" stroke-width="8" stroke-dasharray="310 129" stroke-dashoffset="-23" opacity=".93"/>
-  <text x="930" y="488" text-anchor="middle" font-size="17" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9015</text>
-  <text x="930" y="506" text-anchor="middle" font-size="10" fill="#00e870" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="818" cy="662" r="68" fill="none" stroke="rgba(0,200,80,.14)" stroke-width="1.5" stroke-dasharray="8 5" style="animation:spin 17s linear infinite;transform-origin:818px 662px"/>
-  <circle cx="818" cy="662" r="54" fill="rgba(2,14,4,.94)" stroke="#00c850" stroke-width="3" filter="url(#glow4)"/>
-  <circle cx="818" cy="662" r="62" fill="none" stroke="#00c850" stroke-width="7" stroke-dasharray="260 129" stroke-dashoffset="-20" opacity=".88"/>
-  <text x="818" y="658" text-anchor="middle" font-size="17" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9013</text>
-  <text x="818" y="676" text-anchor="middle" font-size="10" fill="#00e870" font-family="Segoe UI,sans-serif">400G</text>
-</g>
-<g style="cursor:pointer">
-  <circle cx="526" cy="800" r="62" fill="none" stroke="rgba(0,200,80,.13)" stroke-width="1.5" stroke-dasharray="8 5" style="animation:spinr 22s linear infinite;transform-origin:526px 800px"/>
-  <circle cx="526" cy="800" r="50" fill="rgba(2,14,4,.94)" stroke="#00c850" stroke-width="3" filter="url(#glow4)"/>
-  <circle cx="526" cy="800" r="57" fill="none" stroke="#00c850" stroke-width="6.5" stroke-dasharray="158 200" stroke-dashoffset="-18" opacity=".86"/>
-  <text x="526" y="796" text-anchor="middle" font-size="16" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9016</text>
-  <text x="526" y="813" text-anchor="middle" font-size="10" fill="#00e870" font-family="Segoe UI,sans-serif">100G</text>
-</g>
-<!-- 9005SH CRITICAL ALARM -->
-<g style="cursor:pointer">
-  <circle cx="696" cy="892" r="1" fill="none" stroke="#ff3030" stroke-width="2" opacity="0">
-    <animate attributeName="r" values="70;118" dur="2s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values=".7;0" dur="2s" repeatCount="indefinite"/>
-  </circle>
-  <circle cx="696" cy="892" r="78" fill="none" stroke="#ff3030" stroke-width="2.5" style="animation:alarm .5s ease-in-out infinite"/>
-  <circle cx="696" cy="892" r="64" fill="rgba(18,2,2,.95)" stroke="#ff3030" stroke-width="4" filter="url(#glow12)"/>
-  <circle cx="696" cy="892" r="73" fill="none" stroke="#ff3030" stroke-width="9" stroke-dasharray="396 62" stroke-dashoffset="-24" opacity=".98"/>
-  <text x="696" y="888" text-anchor="middle" font-size="16" fill="#ffe0e0" font-family="Segoe UI,sans-serif" font-weight="800">9005SH</text>
-  <text x="696" y="906" text-anchor="middle" font-size="9" fill="#ff7070" font-family="Segoe UI,sans-serif">⚠ CRITICAL</text>
-</g>
-<!-- 9005DC biggest -->
-<g style="cursor:pointer">
-  <circle cx="898" cy="892" r="90" fill="none" stroke="rgba(0,200,80,.22)" stroke-width="2" stroke-dasharray="11 5" style="animation:spin 7s linear infinite;transform-origin:898px 892px"/>
-  <circle cx="898" cy="892" r="75" fill="none" stroke="rgba(0,200,80,.28)" stroke-width="1.5"/>
-  <circle cx="898" cy="892" r="60" fill="rgba(2,14,4,.95)" stroke="#00c850" stroke-width="4.5" filter="url(#glow8)"/>
-  <circle cx="898" cy="892" r="83" fill="none" stroke="#00c850" stroke-width="10" stroke-dasharray="424 97" stroke-dashoffset="-27" opacity=".99"/>
-  <text x="898" y="888" text-anchor="middle" font-size="17" fill="#e0ffe8" font-family="Segoe UI,sans-serif" font-weight="800">9005DC</text>
-  <text x="898" y="906" text-anchor="middle" font-size="10" fill="#00e870" font-family="Segoe UI,sans-serif">4×100G</text>
+  <circle cx="210" cy="516" r="34" fill="#0a2810" stroke="#228840" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="210" cy="516" r="30" fill="none" stroke="#228840" stroke-width="4"
+    stroke-dasharray="68 120" stroke-dashoffset="-9" opacity=".78"/>
+  <text x="210" y="512" text-anchor="middle" font-size="13" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">MDNE</text>
+  <text x="210" y="527" text-anchor="middle" font-size="8" fill="rgba(80,200,100,.6)" font-family="Segoe UI,sans-serif">ASR9906</text>
 </g>
 
-<!-- MOVING PACKETS along IR paths -->
-<circle r="5" fill="#00ffe8" opacity="0"><animateMotion dur="3.6s" repeatCount="indefinite" begin="0s"><mpath href="#ir1"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="3.6s" repeatCount="indefinite"/></circle>
-<path id="ir1" d="M516,318 L716,308 L916,310 L930,492 L818,662 L898,892" fill="none"/>
-<circle r="5" fill="#c0a0ff" opacity="0"><animateMotion dur="3.2s" repeatCount="indefinite" begin=".6s"><mpath href="#ir2"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="3.2s" repeatCount="indefinite" begin=".6s"/></circle>
-<path id="ir2" d="M1326,200 L916,310 L726,500 L696,892" fill="none"/>
-<circle r="4.5" fill="#a3e635" opacity="0"><animateMotion dur="4s" repeatCount="indefinite" begin="1.4s"><mpath href="#ir3"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="4s" repeatCount="indefinite" begin="1.4s"/></circle>
-<path id="ir3" d="M212,520 L516,494 L726,500" fill="none"/>
-<circle r="5" fill="#ffb840" opacity="0"><animateMotion dur="4.5s" repeatCount="indefinite" begin="2s"><mpath href="#ir4"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="4.5s" repeatCount="indefinite" begin="2s"/></circle>
-<path id="ir4" d="M322,183 L916,310 L726,500 L898,892" fill="none"/>
-<circle r="5" fill="#7840ff" opacity="0"><animateMotion dur="3.3s" repeatCount="indefinite" begin=".9s"><mpath href="#ir5"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="3.3s" repeatCount="indefinite" begin=".9s"/></circle>
-<path id="ir5" d="M1568,185 L916,310 L716,308 L516,318" fill="none"/>
-<circle r="4.5" fill="#70b0ff" opacity="0"><animateMotion dur="4.2s" repeatCount="indefinite" begin="2.8s"><mpath href="#ir6"/></animateMotion><animate attributeName="opacity" values="0;1;1;0" dur="4.2s" repeatCount="indefinite" begin="2.8s"/></circle>
-<path id="ir6" d="M244,660 L516,494 L696,892" fill="none"/>
+<!-- ── WESTERN ── SNJD(ASR9906) JDCN(ASR9906) MAKW(ASR9906) WADL(ASR9906) TARP(ASR9904) -->
+<!-- SNJD 72,660 -->
+<g style="cursor:pointer">
+  <circle cx="72" cy="660" r="46" fill="none" stroke="rgba(130,130,190,.16)" stroke-width="1.5"
+    stroke-dasharray="7 4" style="animation:spin 15s linear infinite;transform-origin:72px 660px"/>
+  <circle cx="72" cy="660" r="35" fill="#0a2810" stroke="#228840" stroke-width="2.5" filter="url(#g3)"/>
+  <circle cx="72" cy="660" r="42" fill="none" stroke="#228840" stroke-width="5"
+    stroke-dasharray="140 123" stroke-dashoffset="-13" opacity=".88"/>
+  <text x="72" y="656" text-anchor="middle" font-size="13" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">SNJD</text>
+  <text x="72" y="671" text-anchor="middle" font-size="8" fill="rgba(80,200,100,.65)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- WADL 248,648 -->
+<g style="cursor:pointer">
+  <circle cx="248" cy="648" r="42" fill="#0a2810" stroke="#228840" stroke-width="2.5" filter="url(#g3)"/>
+  <circle cx="248" cy="648" r="38" fill="none" stroke="#228840" stroke-width="5"
+    stroke-dasharray="140 99" stroke-dashoffset="-12" opacity=".86"/>
+  <text x="248" y="644" text-anchor="middle" font-size="13" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">WADL</text>
+  <text x="248" y="659" text-anchor="middle" font-size="8" fill="rgba(80,200,100,.65)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- JDCN 72,748 -->
+<g style="cursor:pointer">
+  <circle cx="72" cy="748" r="40" fill="#0a2810" stroke="#228840" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="72" cy="748" r="36" fill="none" stroke="#228840" stroke-width="4.5"
+    stroke-dasharray="120 106" stroke-dashoffset="-11" opacity=".84"/>
+  <text x="72" y="744" text-anchor="middle" font-size="13" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">JDCN</text>
+  <text x="72" y="759" text-anchor="middle" font-size="8" fill="rgba(80,200,100,.65)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- MAKW 72,836 -->
+<g style="cursor:pointer">
+  <circle cx="72" cy="836" r="38" fill="#0a2810" stroke="#228840" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="72" cy="836" r="34" fill="none" stroke="#228840" stroke-width="4.5"
+    stroke-dasharray="104 109" stroke-dashoffset="-11" opacity=".82"/>
+  <text x="72" y="832" text-anchor="middle" font-size="13" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">MAKW</text>
+  <text x="72" y="847" text-anchor="middle" font-size="8" fill="rgba(80,200,100,.65)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- TARP 238,756 -->
+<g style="cursor:pointer">
+  <circle cx="238" cy="756" r="38" fill="#0d2040" stroke="#2255aa" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="238" cy="756" r="34" fill="none" stroke="#2255aa" stroke-width="4.5"
+    stroke-dasharray="86 127" stroke-dashoffset="-11" opacity=".80"/>
+  <text x="238" y="752" text-anchor="middle" font-size="13" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">TARP</text>
+  <text x="238" y="767" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.6)" font-family="Segoe UI,sans-serif">ASR9904</text>
+</g>
 
-<!-- ═══ LEGEND CONTENT ═══ -->
-<line x1="1256" y1="554" x2="1300" y2="554" stroke="#00c8b4" stroke-width="2.5" opacity=".55"/>
-<text x="1314" y="559" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">100G Local  (static)</text>
-<line x1="1256" y1="588" x2="1300" y2="588" stroke="#a3e635" stroke-width="5" opacity=".55"/>
-<text x="1314" y="593" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">200G Local  (static)</text>
-<line x1="1256" y1="622" x2="1300" y2="622" stroke="#00c850" stroke-width="7" opacity=".55"/>
-<text x="1314" y="627" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G Local  (static)</text>
-<line x1="1256" y1="656" x2="1300" y2="656" stroke="#9020e0" stroke-width="8" opacity=".62"/>
-<text x="1314" y="661" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">400G  9053 ↔ 9015</text>
-<line x1="1256" y1="690" x2="1300" y2="690" stroke="#00c850" stroke-width="9" opacity=".55"/>
-<text x="1314" y="695" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">4 × 100G  (static)</text>
-<line x1="1256" y1="724" x2="1300" y2="724" stroke="#ff3030" stroke-width="11" opacity=".80"/>
-<text x="1314" y="729" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">4 × 100G  ⚠ CRITICAL</text>
-<line x1="1256" y1="758" x2="1300" y2="758" stroke="#ffb840" stroke-width="2" stroke-dasharray="4 14" style="animation:irflow 4.5s linear infinite"/>
-<text x="1314" y="763" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">Dark Fiber  ✦ animated</text>
-<line x1="1256" y1="792" x2="1300" y2="792" stroke="#00ffe8" stroke-width="5" stroke-dasharray="14 7" style="animation:irflow 1.4s linear infinite" filter="url(#irglow)"/>
-<text x="1314" y="797" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">Interregional  ✦ animated</text>
-<line x1="1256" y1="826" x2="1300" y2="826" stroke="#c0a0ff" stroke-width="6" stroke-dasharray="15 7" style="animation:irflow 1.3s linear infinite" filter="url(#irglow)"/>
-<text x="1314" y="831" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif" font-weight="600">IR 400G (KBLP→9003) ✦</text>
+<!-- ── SOUTHERN ── NMNT(navy ASR9904) ABES(navy ASR9904) -->
+<!-- NMNT 78,988 -->
+<g style="cursor:pointer">
+  <circle cx="78" cy="988" r="42" fill="#0d2040" stroke="#2255aa" stroke-width="2.5" filter="url(#g3)"/>
+  <circle cx="78" cy="988" r="38" fill="none" stroke="#2255aa" stroke-width="4.5"
+    stroke-dasharray="48 190" stroke-dashoffset="-12" opacity=".78"/>
+  <text x="78" y="984" text-anchor="middle" font-size="13" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">NMNT</text>
+  <text x="78" y="999" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.6)" font-family="Segoe UI,sans-serif">ASR9904</text>
+</g>
+<!-- ABES 242,988 -->
+<g style="cursor:pointer">
+  <circle cx="242" cy="988" r="38" fill="#0d2040" stroke="#2255aa" stroke-width="2" filter="url(#g3)"/>
+  <circle cx="242" cy="988" r="34" fill="none" stroke="#2255aa" stroke-width="4.5"
+    stroke-dasharray="68 145" stroke-dashoffset="-11" opacity=".80"/>
+  <text x="242" y="984" text-anchor="middle" font-size="13" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">ABES</text>
+  <text x="242" y="999" text-anchor="middle" font-size="8" fill="rgba(100,160,220,.6)" font-family="Segoe UI,sans-serif">ASR9904</text>
+</g>
 
-<text x="1256" y="876" font-size="11" fill="rgba(160,200,255,.3)" font-family="Segoe UI,sans-serif" font-weight="700" letter-spacing="2">REGION COLOURS</text>
-<circle cx="1268" cy="898" r="7" fill="#00c8b4"/><text x="1284" y="903" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">N. Central</text>
-<circle cx="1268" cy="922" r="7" fill="#a050ff"/><text x="1284" y="927" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Northern</text>
-<circle cx="1268" cy="946" r="7" fill="#3080ff"/><text x="1284" y="951" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Western</text>
-<circle cx="1268" cy="970" r="7" fill="#ffa020"/><text x="1284" y="975" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Southern</text>
-<circle cx="1268" cy="994" r="7" fill="#00c850"/><text x="1284" y="999" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Central</text>
-<circle cx="1268" cy="1018" r="7" fill="#7840ff"/><text x="1284" y="1023" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Eastern</text>
-<text x="1256" y="1060" font-size="11" fill="rgba(0,180,255,.2)" font-family="Segoe UI,sans-serif" font-weight="600">Muhammad Usama  ·  Cisco Managed Services  ·  Rev 5.8</text>
+<!-- ── EASTERN ── FRDO(ASR9906=green) KBRP(ASR9906=green) AFII(ASR9906=green) DAEE(ASR9906=green) -->
+<!-- FRDO 1348,188 -->
+<g style="cursor:pointer">
+  <circle cx="1348" cy="188" r="64" fill="none" stroke="rgba(160,120,220,.18)" stroke-width="1.5"
+    stroke-dasharray="8 5" style="animation:spin 12s linear infinite;transform-origin:1348px 188px"/>
+  <circle cx="1348" cy="188" r="50" fill="#0a2810" stroke="#228840" stroke-width="3" filter="url(#g6)"/>
+  <circle cx="1348" cy="188" r="58" fill="none" stroke="#228840" stroke-width="7"
+    stroke-dasharray="318 47" stroke-dashoffset="-19" opacity=".92"/>
+  <text x="1348" y="184" text-anchor="middle" font-size="16" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">FRDO</text>
+  <text x="1348" y="202" text-anchor="middle" font-size="10" fill="rgba(80,200,100,.68)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- KBRP 1572,174 -->
+<g style="cursor:pointer">
+  <circle cx="1572" cy="174" r="58" fill="none" stroke="rgba(160,120,220,.15)" stroke-width="1.5"
+    stroke-dasharray="7 4" style="animation:spinr 16s linear infinite;transform-origin:1572px 174px"/>
+  <circle cx="1572" cy="174" r="46" fill="#0a2810" stroke="#228840" stroke-width="2.5" filter="url(#g6)"/>
+  <circle cx="1572" cy="174" r="53" fill="none" stroke="#228840" stroke-width="6.5"
+    stroke-dasharray="264 69" stroke-dashoffset="-17" opacity=".88"/>
+  <text x="1572" y="170" text-anchor="middle" font-size="15" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">KBRP</text>
+  <text x="1572" y="187" text-anchor="middle" font-size="10" fill="rgba(80,200,100,.66)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- AFII 1348,306 -->
+<g style="cursor:pointer">
+  <circle cx="1348" cy="306" r="60" fill="#0a2810" stroke="#228840" stroke-width="2.5" filter="url(#g6)"/>
+  <circle cx="1348" cy="306" r="55" fill="none" stroke="#228840" stroke-width="6.5"
+    stroke-dasharray="330 16" stroke-dashoffset="-18" opacity=".90"/>
+  <text x="1348" y="302" text-anchor="middle" font-size="16" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">AFII</text>
+  <text x="1348" y="320" text-anchor="middle" font-size="10" fill="rgba(80,200,100,.68)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- DAEE 1572,306 -->
+<g style="cursor:pointer">
+  <circle cx="1572" cy="306" r="54" fill="#0a2810" stroke="#228840" stroke-width="2.5" filter="url(#g6)"/>
+  <circle cx="1572" cy="306" r="49" fill="none" stroke="#228840" stroke-width="6"
+    stroke-dasharray="240 68" stroke-dashoffset="-16" opacity=".86"/>
+  <text x="1572" y="302" text-anchor="middle" font-size="15" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">DAEE</text>
+  <text x="1572" y="318" text-anchor="middle" font-size="10" fill="rgba(80,200,100,.66)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+
+<!-- ── CENTRAL ── exact devices from PDF table page 7 -->
+<!-- 9031 ASR9904(navy) 512,310 -->
+<g style="cursor:pointer">
+  <circle cx="512" cy="310" r="66" fill="none" stroke="rgba(80,180,220,.18)" stroke-width="1.5"
+    stroke-dasharray="9 5" style="animation:spin 13s linear infinite;transform-origin:512px 310px"/>
+  <circle cx="512" cy="310" r="52" fill="#0d2040" stroke="#2255aa" stroke-width="3" filter="url(#g6)"/>
+  <circle cx="512" cy="310" r="60" fill="none" stroke="#2255aa" stroke-width="7"
+    stroke-dasharray="240 137" stroke-dashoffset="-19" opacity=".88"/>
+  <text x="512" y="306" text-anchor="middle" font-size="16" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">9031</text>
+  <text x="512" y="324" text-anchor="middle" font-size="10" fill="rgba(100,160,220,.65)" font-family="Segoe UI,sans-serif">ASR9904</text>
+</g>
+<!-- 9019 ASR9904(navy) 716,300 -->
+<g style="cursor:pointer">
+  <circle cx="716" cy="300" r="62" fill="none" stroke="rgba(80,180,220,.16)" stroke-width="1.5"
+    stroke-dasharray="9 5" style="animation:spinr 17s linear infinite;transform-origin:716px 300px"/>
+  <circle cx="716" cy="300" r="49" fill="#0d2040" stroke="#2255aa" stroke-width="3" filter="url(#g6)"/>
+  <circle cx="716" cy="300" r="57" fill="none" stroke="#2255aa" stroke-width="7"
+    stroke-dasharray="210 148" stroke-dashoffset="-18" opacity=".86"/>
+  <text x="716" y="296" text-anchor="middle" font-size="16" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">9019</text>
+  <text x="716" y="314" text-anchor="middle" font-size="10" fill="rgba(100,160,220,.65)" font-family="Segoe UI,sans-serif">ASR9904</text>
+</g>
+<!-- 9003 ASR9906(green) 938,302 GATEWAY -->
+<g style="cursor:pointer">
+  <circle cx="938" cy="302" r="78" fill="none" stroke="rgba(80,180,220,.22)" stroke-width="2"
+    stroke-dasharray="10 5" style="animation:spin 10s linear infinite;transform-origin:938px 302px"/>
+  <circle cx="938" cy="302" r="62" fill="#0a2810" stroke="#228840" stroke-width="3.5" filter="url(#g10)"/>
+  <circle cx="938" cy="302" r="71" fill="none" stroke="#228840" stroke-width="8.5"
+    stroke-dasharray="302 144" stroke-dashoffset="-23" opacity=".94"/>
+  <text x="938" y="298" text-anchor="middle" font-size="18" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">9003</text>
+  <text x="938" y="318" text-anchor="middle" font-size="11" fill="rgba(80,200,100,.68)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- 9025 ASR9906(green) 512,490 -->
+<g style="cursor:pointer">
+  <circle cx="512" cy="490" r="64" fill="none" stroke="rgba(80,180,220,.15)" stroke-width="1.5"
+    stroke-dasharray="8 5" style="animation:spin 19s linear infinite;transform-origin:512px 490px"/>
+  <circle cx="512" cy="490" r="51" fill="#0a2810" stroke="#228840" stroke-width="3" filter="url(#g6)"/>
+  <circle cx="512" cy="490" r="59" fill="none" stroke="#228840" stroke-width="7"
+    stroke-dasharray="202 169" stroke-dashoffset="-19" opacity=".88"/>
+  <text x="512" y="486" text-anchor="middle" font-size="16" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">9025</text>
+  <text x="512" y="504" text-anchor="middle" font-size="10" fill="rgba(80,200,100,.66)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- 9053 ASR9910(salmon) 730,498 MAIN HUB -->
+<g style="cursor:pointer">
+  <circle cx="730" cy="498" r="88" fill="none" stroke="rgba(220,160,120,.22)" stroke-width="2"
+    stroke-dasharray="11 5" style="animation:spinr 9s linear infinite;transform-origin:730px 498px"/>
+  <circle cx="730" cy="498" r="73" fill="none" stroke="rgba(200,130,100,.28)" stroke-width="1.5"/>
+  <circle cx="730" cy="498" r="58" fill="#281412" stroke="#c05030" stroke-width="4" filter="url(#g10)"/>
+  <circle cx="730" cy="498" r="81" fill="none" stroke="#c05030" stroke-width="9"
+    stroke-dasharray="398 111" stroke-dashoffset="-26" opacity=".96"/>
+  <text x="730" y="494" text-anchor="middle" font-size="19" fill="#ffd0c0" font-family="Segoe UI,sans-serif" font-weight="800">9053</text>
+  <text x="730" y="513" text-anchor="middle" font-size="11" fill="rgba(220,160,130,.68)" font-family="Segoe UI,sans-serif">ASR9910</text>
+</g>
+<!-- 9015 ASR9906(green) 952,488 -->
+<g style="cursor:pointer">
+  <circle cx="952" cy="488" r="72" fill="none" stroke="rgba(80,180,220,.18)" stroke-width="1.8"
+    stroke-dasharray="9 5" style="animation:spin 14s linear infinite;transform-origin:952px 488px"/>
+  <circle cx="952" cy="488" r="57" fill="#0a2810" stroke="#228840" stroke-width="3.5" filter="url(#g6)"/>
+  <circle cx="952" cy="488" r="66" fill="none" stroke="#228840" stroke-width="8"
+    stroke-dasharray="296 118" stroke-dashoffset="-21" opacity=".92"/>
+  <text x="952" y="484" text-anchor="middle" font-size="16" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">9015</text>
+  <text x="952" y="502" text-anchor="middle" font-size="10" fill="rgba(80,200,100,.66)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- 9013 ASR9910(salmon) 830,660 -->
+<g style="cursor:pointer">
+  <circle cx="830" cy="660" r="66" fill="none" stroke="rgba(220,160,120,.16)" stroke-width="1.5"
+    stroke-dasharray="8 5" style="animation:spinr 18s linear infinite;transform-origin:830px 660px"/>
+  <circle cx="830" cy="660" r="52" fill="#281412" stroke="#c05030" stroke-width="3" filter="url(#g6)"/>
+  <circle cx="830" cy="660" r="60" fill="none" stroke="#c05030" stroke-width="7"
+    stroke-dasharray="248 128" stroke-dashoffset="-19" opacity=".88"/>
+  <text x="830" y="656" text-anchor="middle" font-size="16" fill="#ffd0c0" font-family="Segoe UI,sans-serif" font-weight="800">9013</text>
+  <text x="830" y="674" text-anchor="middle" font-size="10" fill="rgba(220,160,130,.66)" font-family="Segoe UI,sans-serif">ASR9910</text>
+</g>
+<!-- 9016 ASR9904(navy) 526,808 -->
+<g style="cursor:pointer">
+  <circle cx="526" cy="808" r="60" fill="none" stroke="rgba(80,180,220,.14)" stroke-width="1.5"
+    stroke-dasharray="8 5" style="animation:spin 23s linear infinite;transform-origin:526px 808px"/>
+  <circle cx="526" cy="808" r="47" fill="#0d2040" stroke="#2255aa" stroke-width="3" filter="url(#g6)"/>
+  <circle cx="526" cy="808" r="55" fill="none" stroke="#2255aa" stroke-width="6.5"
+    stroke-dasharray="152 193" stroke-dashoffset="-17" opacity=".84"/>
+  <text x="526" y="804" text-anchor="middle" font-size="15" fill="#c0d8ff" font-family="Segoe UI,sans-serif" font-weight="800">9016</text>
+  <text x="526" y="821" text-anchor="middle" font-size="10" fill="rgba(100,160,220,.64)" font-family="Segoe UI,sans-serif">ASR9904</text>
+</g>
+<!-- 9005SH ASR9906(green) 706,900 -->
+<g style="cursor:pointer">
+  <circle cx="706" cy="900" r="72" fill="none" stroke="rgba(80,200,100,.18)" stroke-width="1.8"
+    stroke-dasharray="9 5" style="animation:spinr 11s linear infinite;transform-origin:706px 900px"/>
+  <circle cx="706" cy="900" r="57" fill="#0a2810" stroke="#228840" stroke-width="3.5" filter="url(#g10)"/>
+  <circle cx="706" cy="900" r="66" fill="none" stroke="#228840" stroke-width="8"
+    stroke-dasharray="380 34" stroke-dashoffset="-21" opacity=".94"/>
+  <text x="706" y="896" text-anchor="middle" font-size="15" fill="#c0ffcc" font-family="Segoe UI,sans-serif" font-weight="800">9005SH</text>
+  <text x="706" y="914" text-anchor="middle" font-size="10" fill="rgba(80,200,100,.68)" font-family="Segoe UI,sans-serif">ASR9906</text>
+</g>
+<!-- 9005DC ASR9910(salmon) 916,900 BIGGEST -->
+<g style="cursor:pointer">
+  <circle cx="916" cy="900" r="86" fill="none" stroke="rgba(220,160,120,.24)" stroke-width="2"
+    stroke-dasharray="11 5" style="animation:spin 8s linear infinite;transform-origin:916px 900px"/>
+  <circle cx="916" cy="900" r="70" fill="none" stroke="rgba(200,130,100,.30)" stroke-width="1.5"/>
+  <circle cx="916" cy="900" r="56" fill="#281412" stroke="#c05030" stroke-width="4.5" filter="url(#g10)"/>
+  <circle cx="916" cy="900" r="79" fill="none" stroke="#c05030" stroke-width="10"
+    stroke-dasharray="410 86" stroke-dashoffset="-26" opacity=".98"/>
+  <text x="916" y="896" text-anchor="middle" font-size="16" fill="#ffd0c0" font-family="Segoe UI,sans-serif" font-weight="800">9005DC</text>
+  <text x="916" y="914" text-anchor="middle" font-size="10" fill="rgba(220,160,130,.70)" font-family="Segoe UI,sans-serif">ASR9910</text>
+</g>
+
+<!-- MOVING PACKETS (subtle, along inter-region paths) -->
+<circle r="5" fill="#dd2222" opacity="0"><animateMotion dur="3.6s" repeatCount="indefinite" begin="0s"><mpath href="#mp1"/></animateMotion><animate attributeName="opacity" values="0;.9;.9;0" dur="3.6s" repeatCount="indefinite"/></circle>
+<path id="mp1" d="M512,310 L716,300 L938,302 L952,488 L830,660 L916,900" fill="none"/>
+<circle r="5" fill="#00ccee" opacity="0"><animateMotion dur="3.2s" repeatCount="indefinite" begin=".5s"><mpath href="#mp2"/></animateMotion><animate attributeName="opacity" values="0;.85;.85;0" dur="3.2s" repeatCount="indefinite" begin=".5s"/></circle>
+<path id="mp2" d="M72,438 L512,490 L730,498" fill="none"/>
+<circle r="5" fill="#dd2222" opacity="0"><animateMotion dur="4s" repeatCount="indefinite" begin="1.2s"><mpath href="#mp3"/></animateMotion><animate attributeName="opacity" values="0;.85;.85;0" dur="4s" repeatCount="indefinite" begin="1.2s"/></circle>
+<path id="mp3" d="M1348,188 L938,302 L716,300 L512,310" fill="none"/>
+<circle r="5" fill="#9040d0" opacity="0"><animateMotion dur="3.8s" repeatCount="indefinite" begin=".8s"><mpath href="#mp4"/></animateMotion><animate attributeName="opacity" values="0;.9;.9;0" dur="3.8s" repeatCount="indefinite" begin=".8s"/></circle>
+<path id="mp4" d="M1572,174 L938,302 L730,498 L706,900" fill="none"/>
+<circle r="4.5" fill="#dd2222" opacity="0"><animateMotion dur="4.4s" repeatCount="indefinite" begin="2.2s"><mpath href="#mp5"/></animateMotion><animate attributeName="opacity" values="0;.8;.8;0" dur="4.4s" repeatCount="indefinite" begin="2.2s"/></circle>
+<path id="mp5" d="M248,648 L512,490 L706,900" fill="none"/>
+<circle r="4.5" fill="#00ccee" opacity="0"><animateMotion dur="5s" repeatCount="indefinite" begin="3.5s"><mpath href="#mp6"/></animateMotion><animate attributeName="opacity" values="0;.8;.8;0" dur="5s" repeatCount="indefinite" begin="3.5s"/></circle>
+<path id="mp6" d="M322,170 L938,302 L730,498 L916,900" fill="none"/>
+
+<!-- ═══ LEGEND ═══ -->
+<!-- Exact 4 items from PDF legend image -->
+<line x1="1310" y1="548" x2="1370" y2="548" stroke="#22cc44" stroke-width="3" opacity=".80"/>
+<text x="1384" y="553" font-size="14" fill="rgba(180,230,180,.75)" font-family="Segoe UI,sans-serif" font-weight="700">100G Intra-Region</text>
+
+<line x1="1310" y1="584" x2="1370" y2="584" stroke="#dd2222" stroke-width="3.5" stroke-dasharray="14 8"
+  style="animation:irflow 1.5s linear infinite" opacity=".88" filter="url(#irf)"/>
+<text x="1384" y="589" font-size="14" fill="rgba(255,160,160,.75)" font-family="Segoe UI,sans-serif" font-weight="700">100G Inter-Region  ✦</text>
+
+<line x1="1310" y1="620" x2="1370" y2="620" stroke="#00ccee" stroke-width="5" stroke-dasharray="16 8"
+  style="animation:irflow 1.4s linear infinite" opacity=".92" filter="url(#irf)"/>
+<text x="1384" y="625" font-size="14" fill="rgba(100,230,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">200G Intra/Inter-Region  ✦</text>
+
+<line x1="1310" y1="656" x2="1370" y2="656" stroke="#9040d0" stroke-width="8" stroke-dasharray="16 7"
+  style="animation:irflow 1.2s linear infinite" opacity=".90" filter="url(#irf)"/>
+<text x="1384" y="661" font-size="14" fill="rgba(200,150,255,.75)" font-family="Segoe UI,sans-serif" font-weight="700">400G Cisco DWDM  ✦</text>
+
+<!-- Device type dots -->
+<text x="1310" y="710" font-size="11" fill="rgba(160,200,255,.35)" font-family="Segoe UI,sans-serif" font-weight="700" letter-spacing="2">DEVICE TYPES</text>
+<circle cx="1322" cy="734" r="9" fill="#0d2040" stroke="#2255aa" stroke-width="2"/>
+<text x="1340" y="739" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif">ASR9904  (dark navy)</text>
+<circle cx="1322" cy="762" r="9" fill="#0a2810" stroke="#228840" stroke-width="2"/>
+<text x="1340" y="767" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif">ASR9906  (green)</text>
+<circle cx="1322" cy="790" r="9" fill="#281412" stroke="#c05030" stroke-width="2"/>
+<text x="1340" y="795" font-size="13" fill="rgba(180,220,255,.55)" font-family="Segoe UI,sans-serif">ASR9910  (salmon)</text>
+
+<!-- ISIS Domain IDs -->
+<text x="1310" y="840" font-size="11" fill="rgba(160,200,255,.35)" font-family="Segoe UI,sans-serif" font-weight="700" letter-spacing="2">ISIS DOMAINS</text>
+<text x="1310" y="864" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Northern Central  ISIS 50</text>
+<text x="1310" y="886" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Northern  ISIS 48</text>
+<text x="1310" y="908" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Western  ISIS 16</text>
+<text x="1310" y="930" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Southern  ISIS 64</text>
+<text x="1310" y="952" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Central  ISIS 01</text>
+<text x="1310" y="974" font-size="12" fill="rgba(180,220,255,.45)" font-family="Segoe UI,sans-serif">Eastern  ISIS 32</text>
+
+<text x="1310" y="1032" font-size="11" fill="rgba(0,160,220,.22)" font-family="Segoe UI,sans-serif" font-weight="600">Muhammad Usama  ·  Cisco Managed Services  ·  Dawiyat Core Operations  ·  Rev 5.3</text>
+
+<!-- ════════════════════════════════════════════════════════════════ -->
+<!-- TOPMOST LINKS — injected last, guaranteed on top of all nodes  -->
+<!-- ════════════════════════════════════════════════════════════════ -->
+
+<!-- ASAM(72,438)→SNJD(72,660) 200G cyan — path routed RIGHT of all region boxes -->
+<path d="M 72,438 L 420,438 L 420,660 L 72,660"
+  stroke="#00ccee" stroke-width="5" stroke-dasharray="16 8" fill="none"
+  style="animation:irflow 1.5s linear infinite" opacity=".93" filter="url(#irf)"/>
+<text x="428" y="552" font-size="11" fill="#44eeff" font-family="Segoe UI,sans-serif" font-weight="800">200G</text>
+
+<!-- NMNT(78,988)→MAKW(72,836) 100G red — path routed RIGHT of all region boxes -->
+<path d="M 78,988 L 420,988 L 420,836 L 72,836"
+  stroke="#dd2222" stroke-width="5" stroke-dasharray="14 8" fill="none"
+  style="animation:irflow 1.5s linear infinite" opacity=".93" filter="url(#irf)"/>
+<text x="428" y="912" font-size="11" fill="#ff6060" font-family="Segoe UI,sans-serif" font-weight="800">100G</text>
+
 </svg>
 </div>
 
 <button id="tvbtn" onclick="enterTV()">⛶ TV MODE</button>
-<div id="tvov"><svg id="tvsvg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;"></svg></div>
+<div id="tvov"><svg id="tvsvg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet"
+  xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;"></svg></div>
 <button id="exitbtn" onclick="exitTV()">✕ EXIT TV</button>
 <script>
 function enterTV(){
